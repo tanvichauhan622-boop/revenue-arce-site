@@ -751,6 +751,61 @@ function exportSite(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='revenue-arce.html';a.click();URL.revokeObjectURL(a.href);
 }
 async function copyHTML(){try{await navigator.clipboard.writeText(document.documentElement.outerHTML);alert('✅ Copied to clipboard!');}catch(e){alert('Could not copy — use Download instead.');}}
+// ── BACKEND CONNECTION ──
+const API = 'https://revenue-arce-backend-production.up.railway.app';
+
+// Load CMS content on page load
+fetch(`${API}/api/cms`)
+  .then(r => r.json())
+  .then(({ content }) => {
+    if (!content) return;
+    const h = content.hero;
+    if (h) {
+      if(h.eyebrow) document.getElementById('ed-eyebrow').textContent = h.eyebrow;
+      if(h.line1) document.getElementById('ed-l1').textContent = h.line1;
+      if(h.line2) document.getElementById('ed-l2').textContent = h.line2;
+      if(h.line3) document.getElementById('ed-l3').textContent = h.line3;
+      if(h.description) document.getElementById('ed-hdesc').textContent = h.description;
+      if(h.badge1) { document.getElementById('ed-b1n').textContent = h.badge1.num; document.getElementById('ed-b1l').textContent = h.badge1.label; }
+      if(h.badge2) { document.getElementById('ed-b2n').textContent = h.badge2.num; document.getElementById('ed-b2l').textContent = h.badge2.label; }
+      if(h.badge3) { document.getElementById('ed-b3n').textContent = h.badge3.num; document.getElementById('ed-b3l').textContent = h.badge3.label; }
+    }
+  })
+  .catch(() => console.log('CMS offline, using defaults'));
+
+// Override handleEmail to use backend
+function handleEmail() {
+  const email = document.getElementById('emailIn').value;
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailIn').style.outline = '2px solid var(--accent2)';
+    setTimeout(() => document.getElementById('emailIn').style.outline = '', 1000);
+    return;
+  }
+  const btn = document.querySelector('.email-row button');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  fetch(`${API}/api/contact`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: 'Website Visitor',
+      email,
+      message: 'Interested in services — came from the website CTA.',
+      service: 'Other'
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success) {
+      alert('🚀 Got it! We\'ll reach out within 24 hours.');
+      document.getElementById('emailIn').value = '';
+    } else {
+      alert('Something went wrong. Please try again.');
+    }
+  })
+  .catch(() => alert('Could not send. Please try again.'))
+  .finally(() => { btn.textContent = "Let's Go →"; btn.disabled = false; });
+}
 </script>
 </body>
 </html>
