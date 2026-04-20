@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title id="page-title">Revenue Arce</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style id="root-vars">
+:root{
+  --c1:#0d0d0d;
+  --c2:#111111;
+  --c3:#161616;
+  --accent:#00ffe1;
+  --accent2:#ff3cac;
+  --accent3:#ffcc00;
+  --text:#f0ece3;
+  --muted:rgba(240,236,227,0.45);
+  --font-hero:'Bebas Neue',sans-serif;
+  --font-body:'Outfit',sans-serif;
+  --hero-size:clamp(4rem,13vw,13rem);
+  --section-pad:9rem 5rem;
+  --card-radius:16px;
+  --nav-height:72px;
+  --border-color:rgba(0,255,225,0.1);
+}
+</style>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--c1);color:var(--text);font-family:var(--font-body);overflow-x:hidden}
+@media(pointer:fine){body{cursor:none}#cur,#curR{position:fixed;border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%)}#cur{width:10px;height:10px;background:var(--accent);mix-blend-mode:difference}#curR{width:36px;height:36px;border:1.5px solid var(--accent);opacity:.45;transition:width .25s,height .25s,opacity .3s}}
+@media(pointer:coarse){#cur,#curR{display:none}}
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-height);display:flex;justify-content:space-between;align-items:center;padding:0 4rem;background:rgba(13,13,13,.7);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color)}
+.logo{font-family:var(--font-hero);font-size:1.7rem;letter-spacing:.05em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{color:var(--text);text-decoration:none;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;opacity:.5;transition:opacity .2s,color .2s}
+.nav-links a:hover{opacity:1;color:var(--accent)}
+.nav-cta{font-family:var(--font-body);font-weight:600;font-size:.78rem;letter-spacing:.07em;text-transform:uppercase;padding:.65rem 1.5rem;background:transparent;border:1.5px solid var(--accent);color:var(--accent);border-radius:4px;cursor:pointer;transition:background .2s,color .2s,box-shadow .2s;white-space:nowrap}
+.nav-cta:hover{background:var(--accent);color:#000;box-shadow:0 0 28px rgba(0,255,225,.35)}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.nav-hamburger span{display:block;width:24px;height:2px;background:var(--accent);transition:transform .3s,opacity .3s}
+.nav-mobile{display:none;position:fixed;top:var(--nav-height);left:0;right:0;background:rgba(10,10,10,.98);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);z-index:299;padding:1.5rem 2rem;flex-direction:column;gap:.5rem}
+.nav-mobile.open{display:flex}
+.nav-mobile a{color:var(--text);text-decoration:none;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;opacity:.6;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.05);transition:opacity .2s}
+.nav-mobile a:hover{opacity:1}
+
+/* HERO */
+.hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:0 4rem;padding-top:calc(var(--nav-height) + 2rem);overflow:hidden}
+.hero-eyebrow{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;color:var(--accent);opacity:.85;margin-bottom:1.5rem;animation:rise .9s ease both}
+.hero-h1{font-family:var(--font-hero);font-size:var(--hero-size);line-height:.9;letter-spacing:.02em;animation:rise 1s .06s ease both}
+.hero-h1 .line1{display:block}
+.hero-h1 .line2{display:block;background:linear-gradient(135deg,var(--accent2),var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 30px rgba(255,60,172,.4))}
+.hero-h1 .line3{display:block;opacity:.1;font-size:.52em;letter-spacing:.14em}
+.shadow-text{text-shadow:1px 1px 0 rgba(0,255,225,.18),3px 3px 0 rgba(0,255,225,.12),6px 6px 0 rgba(0,255,225,.07),10px 10px 18px rgba(0,0,0,.6)}
+.hero-desc{max-width:460px;font-size:1rem;line-height:1.75;opacity:.52;margin-top:2rem;animation:rise 1s .15s ease both}
+.hero-actions{display:flex;gap:.8rem;margin-top:2rem;flex-wrap:wrap;animation:rise 1s .2s ease both}
+.btn-glow{font-family:var(--font-body);font-weight:600;font-size:.85rem;letter-spacing:.05em;text-transform:uppercase;padding:.9rem 2.2rem;border:none;background:linear-gradient(135deg,var(--accent),#00bfaa);color:#000;border-radius:4px;cursor:pointer;transition:transform .2s,box-shadow .2s;text-decoration:none;display:inline-block}
+.btn-glow:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(0,255,225,.3)}
+.btn-outline{font-family:var(--font-body);font-weight:500;font-size:.85rem;letter-spacing:.05em;text-transform:uppercase;padding:.9rem 2.2rem;border:1.5px solid rgba(240,236,227,.2);color:var(--text);border-radius:4px;cursor:pointer;transition:border-color .2s,background .2s,transform .2s;text-decoration:none;display:inline-block}
+.btn-outline:hover{border-color:var(--accent2);background:rgba(255,60,172,.07);transform:translateY(-3px)}
+.hero-badge{position:absolute;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);backdrop-filter:blur(10px);border-radius:12px;padding:.75rem 1.1rem;animation:floatY 4s ease-in-out infinite}
+.badge1{top:22%;right:6%;animation-delay:0s}.badge2{top:46%;right:3%;animation-delay:-1.6s}.badge3{bottom:22%;right:8%;animation-delay:-3.2s}
+.badge-num{font-family:var(--font-hero);font-size:1.6rem;color:var(--accent);display:block;line-height:1}
+.badge-label{color:var(--muted);font-size:.62rem;letter-spacing:.07em;text-transform:uppercase}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.scroll-hint{position:absolute;bottom:2.5rem;left:4rem;display:flex;align-items:center;gap:.7rem;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;opacity:.28}
+.scroll-line{width:44px;height:1px;background:var(--accent);animation:pline 2s ease infinite}
+@keyframes pline{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* MARQUEE */
+.marquee-wrap{position:relative;z-index:1;padding:1.4rem 0;overflow:hidden;background:rgba(0,255,225,.03);border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color)}
+.marquee-inner{display:flex;gap:3.5rem;animation:tick 20s linear infinite;white-space:nowrap}
+.m-item{font-family:var(--font-hero);font-size:1rem;letter-spacing:.1em;color:rgba(240,236,227,.28);flex-shrink:0;display:flex;align-items:center;gap:1.2rem}
+.m-item span{color:var(--accent);font-size:.75rem}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* SECTION BASE */
+section{position:relative;z-index:1}
+.section-inner{padding:var(--section-pad)}
+.s-label{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.9rem;opacity:.85}
+.s-title{font-family:var(--font-hero);font-size:clamp(2.5rem,5.5vw,5.5rem);letter-spacing:.02em;line-height:.95;margin-bottom:.75rem}
+.s-sub{font-size:.95rem;opacity:.48;max-width:400px;line-height:1.75;margin-bottom:4rem}
+
+/* SERVICES */
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:rgba(255,255,255,.04)}
+.svc{background:var(--c1);padding:2.8rem 2.2rem;position:relative;overflow:hidden;transition:background .3s}
+.svc:hover{background:var(--c2)}
+.svc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--accent),var(--accent2));opacity:0;transition:opacity .4s}
+.svc:hover::before{opacity:.035}
+.svc-num{font-family:var(--font-hero);font-size:4.5rem;position:absolute;top:.8rem;right:1.2rem;opacity:.04;line-height:1;color:var(--accent)}
+.svc-icon{font-size:2.2rem;margin-bottom:1.2rem;display:block;transition:transform .3s}
+.svc:hover .svc-icon{transform:scale(1.12) rotateZ(-5deg)}
+.svc h3{font-weight:600;font-size:1rem;margin-bottom:.65rem}
+.svc p{font-size:.84rem;opacity:.48;line-height:1.7}
+.svc-line{position:absolute;bottom:0;left:0;width:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .45s ease}
+.svc:hover .svc-line{width:100%}
+
+/* WHY */
+.why-wrap{display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center}
+.why-left{perspective:1000px}
+.why-card-3d{background:linear-gradient(135deg,rgba(0,255,225,.05),rgba(255,60,172,.05));border:1px solid rgba(0,255,225,.12);border-radius:var(--card-radius);padding:3.5rem 3rem;transform:rotateY(-8deg) rotateX(4deg);transform-style:preserve-3d;box-shadow:20px 20px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);transition:transform .4s,box-shadow .4s}
+.why-card-3d:hover{transform:rotateY(-2deg) rotateX(1deg);box-shadow:28px 28px 70px rgba(0,0,0,.7),0 0 35px rgba(0,255,225,.08)}
+.why-big{font-family:var(--font-hero);font-size:7rem;line-height:1;background:linear-gradient(180deg,var(--accent),rgba(0,255,225,.2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.why-sub-text{font-size:.92rem;opacity:.48;line-height:1.7;margin-top:.9rem}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;margin-top:2rem}
+.metric{background:rgba(0,255,225,.04);border:1px solid rgba(0,255,225,.1);border-radius:10px;padding:1.1rem}
+.metric-n{font-family:var(--font-hero);font-size:2rem;color:var(--accent);line-height:1}
+.metric-l{font-size:.68rem;opacity:.42;letter-spacing:.07em;text-transform:uppercase;margin-top:.25rem}
+.why-points{display:flex;flex-direction:column;gap:2rem}
+.wp{display:flex;gap:1.1rem;align-items:flex-start;padding-bottom:2rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.wp:last-child{border-bottom:none;padding-bottom:0}
+.wp-ico{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;background:rgba(0,255,225,.07);border:1px solid rgba(0,255,225,.11);transition:background .3s}
+.wp:hover .wp-ico{background:rgba(0,255,225,.14)}
+.wp-text h4{font-weight:600;font-size:.92rem;margin-bottom:.3rem}
+.wp-text p{font-size:.82rem;opacity:.46;line-height:1.65}
+
+/* PROCESS */
+.process-row{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid rgba(255,255,255,.06);border-radius:var(--card-radius);overflow:hidden}
+.proc{padding:2.8rem 2.2rem;position:relative;border-right:1px solid rgba(255,255,255,.06);transition:background .3s}
+.proc:last-child{border-right:none}
+.proc:hover{background:rgba(0,255,225,.03)}
+.proc-n{font-family:var(--font-hero);font-size:4.5rem;color:var(--accent);opacity:.13;line-height:1;margin-bottom:1.2rem}
+.proc h4{font-weight:600;font-size:.95rem;margin-bottom:.55rem}
+.proc p{font-size:.82rem;opacity:.44;line-height:1.65}
+.proc-arr{position:absolute;top:50%;right:-1px;transform:translateY(-50%);color:var(--accent);opacity:.25;font-size:1.1rem;z-index:2}
+
+/* CTA */
+.cta-section{text-align:center;padding:9rem 2rem;overflow:hidden;position:relative}
+.cta-section::before{content:'REVENUE';font-family:var(--font-hero);font-size:20vw;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);opacity:.016;white-space:nowrap;color:var(--accent);pointer-events:none}
+.cta-h2{font-family:var(--font-hero);font-size:clamp(3rem,7vw,7rem);line-height:.95;margin-bottom:1.5rem}
+.cta-h2 em{font-style:normal;background:linear-gradient(90deg,var(--accent2),var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cta-p{font-size:.95rem;opacity:.48;max-width:420px;margin:0 auto 2.5rem;line-height:1.75}
+.email-row{display:flex;max-width:440px;margin:0 auto;border:1.5px solid rgba(0,255,225,.22);border-radius:5px;overflow:hidden;background:rgba(0,255,225,.03)}
+.email-row input{flex:1;background:transparent;border:none;outline:none;padding:.9rem 1.2rem;color:var(--text);font-family:var(--font-body);font-size:.88rem;min-width:0}
+.email-row input::placeholder{opacity:.3}
+.email-row button{background:var(--accent);color:#000;font-family:var(--font-body);font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;padding:.85rem 1.5rem;border:none;cursor:pointer;transition:background .2s;white-space:nowrap}
+.email-row button:hover{background:var(--accent2);color:#fff}
+
+/* FOOTER */
+footer{padding:2.5rem 4rem;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;flex-wrap:wrap;gap:1rem}
+.f-logo{font-family:var(--font-hero);font-size:1.4rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+footer p{font-size:.76rem;opacity:.22}
+.f-links{display:flex;gap:1.8rem;list-style:none;flex-wrap:wrap}
+.f-links a{color:var(--text);text-decoration:none;font-size:.76rem;opacity:.3;letter-spacing:.06em;text-transform:uppercase;transition:opacity .2s}
+.f-links a:hover{opacity:.85}
+
+/* EDITOR BUTTON */
+#editor-toggle{position:fixed;bottom:1.5rem;right:1.5rem;z-index:500;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:var(--font-body);font-weight:700;font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;padding:.75rem 1.3rem;border:none;border-radius:8px;cursor:pointer;box-shadow:0 0 28px rgba(0,255,225,.28);transition:transform .2s,box-shadow .2s}
+#editor-toggle:hover{transform:scale(1.05);box-shadow:0 0 44px rgba(0,255,225,.45)}
+
+/* EDITOR PANEL */
+#editor-panel{position:fixed;top:0;right:-100%;width:min(500px,100vw);height:100vh;background:#090909;border-left:1px solid rgba(0,255,225,.12);z-index:600;transition:right .4s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;overflow:hidden}
+#editor-panel.open{right:0}
+.ep-head{padding:1.2rem 1.6rem;border-bottom:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;background:#0c0c0c;flex-shrink:0}
+.ep-head h2{font-family:var(--font-hero);font-size:1.3rem;letter-spacing:.05em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ep-close{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text);width:30px;height:30px;border-radius:6px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.ep-close:hover{background:rgba(255,60,172,.25)}
+.ep-tabs{display:flex;border-bottom:1px solid rgba(255,255,255,.06);background:#0c0c0c;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ep-tab{padding:.65rem .9rem;font-size:.63rem;letter-spacing:.07em;text-transform:uppercase;color:var(--text);opacity:.35;cursor:pointer;border:none;background:none;white-space:nowrap;border-bottom:2px solid transparent;transition:opacity .2s,border-color .2s}
+.ep-tab.active{opacity:1;border-bottom-color:var(--accent);color:var(--accent)}
+.ep-tab:hover{opacity:.75}
+.ep-body{flex:1;overflow-y:auto;padding:1.4rem 1.5rem;-webkit-overflow-scrolling:touch}
+.ep-pane{display:none}.ep-pane.active{display:block}
+.ep-group{margin-bottom:1.8rem;padding-bottom:1.8rem;border-bottom:1px solid rgba(255,255,255,.045)}
+.ep-group:last-child{border-bottom:none;margin-bottom:0}
+.ep-group-title{font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);opacity:.75;margin-bottom:1rem}
+.field{margin-bottom:.85rem}
+.field label{display:block;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;opacity:.38;margin-bottom:.32rem}
+.field input[type=text],.field textarea,.field select{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:.58rem .85rem;color:var(--text);font-family:var(--font-body);font-size:.82rem;outline:none;transition:border-color .2s;resize:vertical}
+.field input[type=text]:focus,.field textarea:focus,.field select:focus{border-color:rgba(0,255,225,.38)}
+.field textarea{min-height:60px}
+.field select{background:#111;cursor:pointer}
+.field select option{background:#111}
+.field input[type=color]{width:100%;height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:5px;padding:.18rem .35rem;cursor:pointer}
+.field input[type=range]{width:100%;accent-color:var(--accent);margin-top:.25rem}
+.field .rrow{display:flex;align-items:center;gap:.6rem}
+.field .rval{font-size:.76rem;color:var(--accent);min-width:40px;text-align:right;opacity:.8}
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.ep-apply{width:100%;padding:.75rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:var(--font-body);font-weight:700;font-size:.76rem;letter-spacing:.07em;text-transform:uppercase;border:none;border-radius:5px;cursor:pointer;margin-top:.35rem;transition:opacity .2s,transform .15s}
+.ep-apply:hover{opacity:.88;transform:scale(1.01)}
+.ep-apply.sec{background:rgba(0,255,225,.1);color:var(--accent);border:1px solid rgba(0,255,225,.22)}
+.ep-apply.sec:hover{background:rgba(0,255,225,.18)}
+.ep-apply.danger{background:rgba(255,60,172,.15);color:var(--accent2);border:1px solid rgba(255,60,172,.25)}
+.hint{font-size:.72rem;opacity:.32;line-height:1.6;margin-bottom:.65rem}
+.cref{font-family:'Space Mono',monospace;font-size:.68rem;opacity:.42;line-height:2.1;background:rgba(255,255,255,.03);padding:.75rem;border-radius:6px;border:1px solid rgba(255,255,255,.06)}
+.tog-row{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem}
+.tog-row input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px;cursor:pointer}
+.tog-row label{opacity:.65;font-size:.82rem;cursor:pointer}
+.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:.45rem}
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:0 1.4rem}
+  .nav-links,.nav-cta{display:none}
+  .nav-hamburger{display:flex}
+  .hero{padding:0 1.4rem;padding-top:calc(var(--nav-height) + 1rem)}
+  .hero-badge{display:none}
+  .scroll-hint{left:1.4rem}
+  .section-inner{padding:5rem 1.4rem}
+  .services-grid{grid-template-columns:1fr 1fr}
+  .why-wrap{grid-template-columns:1fr;gap:3rem}
+  .why-card-3d{transform:none}
+  .process-row{grid-template-columns:1fr 1fr}
+  .proc{border-right:none;border-bottom:1px solid rgba(255,255,255,.06)}
+  .proc:nth-child(odd){border-right:1px solid rgba(255,255,255,.06)}
+  .proc-arr{display:none}
+  footer{padding:2rem 1.4rem;justify-content:center;text-align:center}
+  #editor-toggle{bottom:.9rem;right:.9rem;font-size:.65rem;padding:.6rem .95rem}
+}
+@media(max-width:560px){
+  .services-grid{grid-template-columns:1fr}
+  .process-row{grid-template-columns:1fr}
+  .proc{border-right:none !important}
+  .hero-actions{flex-direction:column;align-items:stretch}
+  .btn-glow,.btn-outline{text-align:center}
+  .email-row{flex-direction:column;border-radius:8px}
+  .email-row input{padding:1rem 1.2rem}
+  .email-row button{padding:.9rem}
+  .ep-tab{font-size:.58rem;padding:.6rem .65rem}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="curR"></div>
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="logo" id="ed-logo">RevenueArce</div>
+  <ul class="nav-links">
+    <li><a href="#services" id="nav-l1">Services</a></li>
+    <li><a href="#why" id="nav-l2">Why Us</a></li>
+    <li><a href="#process" id="nav-l3">Process</a></li>
+    <li><a href="#contact" id="nav-l4">Contact</a></li>
+  </ul>
+  <button class="nav-cta" id="ed-navcta" onclick="scrollTo2('#contact')">Get Started</button>
+  <button class="nav-hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="#services" onclick="closeMobileNav()">Services</a>
+  <a href="#why" onclick="closeMobileNav()">Why Us</a>
+  <a href="#process" onclick="closeMobileNav()">Process</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow" id="ed-eyebrow">AI-Powered Growth Agency</div>
+  <h1 class="hero-h1">
+    <span class="line1 shadow-text" id="ed-l1">WE BUILD.</span>
+    <span class="line2" id="ed-l2">WE SCALE.</span>
+    <span class="line3" id="ed-l3">Revenue Arce</span>
+  </h1>
+  <p class="hero-desc" id="ed-hdesc">Revenue Arce helps businesses grow with stunning websites, relentless social media strategy, and AI-powered systems that actually deliver results.</p>
+  <div class="hero-actions">
+    <a href="#services" class="btn-glow" id="ed-btn1">Explore Services</a>
+    <a href="#contact" class="btn-outline" id="ed-btn2">Let's Talk →</a>
+  </div>
+  <div class="hero-badge badge1"><span class="badge-num" id="ed-b1n">50+</span><span class="badge-label" id="ed-b1l">Projects Delivered</span></div>
+  <div class="hero-badge badge2"><span class="badge-num" id="ed-b2n">3×</span><span class="badge-label" id="ed-b2l">Revenue Growth</span></div>
+  <div class="hero-badge badge3"><span class="badge-num" id="ed-b3n">7d</span><span class="badge-label" id="ed-b3l">Avg Launch Time</span></div>
+  <div class="scroll-hint"><div class="scroll-line"></div>Scroll to Explore</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    <div class="m-item"><span>✦</span>Web Design</div><div class="m-item"><span>✦</span>Social Media</div>
+    <div class="m-item"><span>✦</span>AI Automation</div><div class="m-item"><span>✦</span>Brand Strategy</div>
+    <div class="m-item"><span>✦</span>Content Creation</div><div class="m-item"><span>✦</span>SEO & Growth</div>
+    <div class="m-item"><span>✦</span>Web Design</div><div class="m-item"><span>✦</span>Social Media</div>
+    <div class="m-item"><span>✦</span>AI Automation</div><div class="m-item"><span>✦</span>Brand Strategy</div>
+    <div class="m-item"><span>✦</span>Content Creation</div><div class="m-item"><span>✦</span>SEO & Growth</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-inner">
+    <div class="s-label">What We Do</div>
+    <h2 class="s-title shadow-text" id="ed-svctitle">OUR SERVICES</h2>
+    <p class="s-sub" id="ed-svcsub">From your first impression online to your daily brand presence — we handle everything end to end.</p>
+    <div class="services-grid">
+      <div class="svc"><div class="svc-num">01</div><span class="svc-icon" id="s1i">🌐</span><h3 id="s1t">Website Design & Dev</h3><p id="s1d">High-converting, jaw-dropping websites built fast. Optimized to impress, designed to perform.</p><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-num">02</div><span class="svc-icon" id="s2i">📱</span><h3 id="s2t">Social Media Mgmt</h3><p id="s2d">Consistent, engaging content across all platforms. We grow your audience and keep your brand top of mind.</p><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-num">03</div><span class="svc-icon" id="s3i">🤖</span><h3 id="s3t">AI Automation</h3><p id="s3d">Save time and scale faster. Chatbots, workflows, lead nurturing — all powered by the latest AI.</p><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-num">04</div><span class="svc-icon" id="s4i">📈</span><h3 id="s4t">SEO & Growth</h3><p id="s4d">Data-driven strategies that put you in front of the right audience. Real growth, measurable results.</p><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-num">05</div><span class="svc-icon" id="s5i">🎨</span><h3 id="s5t">Brand Identity</h3><p id="s5d">A brand that looks the part and tells a story. Logo, colors, type — built to stand out.</p><div class="svc-line"></div></div>
+      <div class="svc"><div class="svc-num">06</div><span class="svc-icon" id="s6i">✍️</span><h3 id="s6t">Content Creation</h3><p id="s6d">Scroll-stopping copy, graphics, and video — on-brand, on-message, every time.</p><div class="svc-line"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section id="why" style="background:rgba(0,255,225,.015)">
+  <div class="section-inner">
+    <div class="why-wrap">
+      <div class="why-left">
+        <div class="s-label">Why Revenue Arce</div>
+        <div class="why-card-3d">
+          <div class="why-big" id="ed-whybig">100%</div>
+          <p class="why-sub-text" id="ed-whyp">Custom strategy for every client. No templates — just work that actually moves the needle.</p>
+          <div class="metrics">
+            <div class="metric"><div class="metric-n" id="ed-m1n">50+</div><div class="metric-l" id="ed-m1l">Projects Done</div></div>
+            <div class="metric"><div class="metric-n" id="ed-m2n">3×</div><div class="metric-l" id="ed-m2l">Revenue Growth</div></div>
+            <div class="metric"><div class="metric-n" id="ed-m3n">7d</div><div class="metric-l" id="ed-m3l">Launch Time</div></div>
+            <div class="metric"><div class="metric-n" id="ed-m4n">24/7</div><div class="metric-l" id="ed-m4l">Support</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="why-right why-points">
+        <div class="wp"><div class="wp-ico" id="wp1i">⚡</div><div class="wp-text"><h4 id="wp1t">Fast Turnarounds</h4><p id="wp1d">We move at the speed of business. Results in days, not months.</p></div></div>
+        <div class="wp"><div class="wp-ico" id="wp2i">🎯</div><div class="wp-text"><h4 id="wp2t">Revenue-Focused</h4><p id="wp2d">Everything we do ties back to one goal: growing your bottom line.</p></div></div>
+        <div class="wp"><div class="wp-ico" id="wp3i">🤝</div><div class="wp-text"><h4 id="wp3t">True Partnership</h4><p id="wp3d">We treat your business like our own — invested in your success every step of the way.</p></div></div>
+        <div class="wp"><div class="wp-ico" id="wp4i">🔬</div><div class="wp-text"><h4 id="wp4t">AI-Enhanced Work</h4><p id="wp4d">We leverage the latest AI tools to deliver better quality, faster, at competitive prices.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="section-inner">
+    <div class="s-label">How It Works</div>
+    <h2 class="s-title shadow-text" id="ed-proctitle">THE PROCESS</h2>
+    <p class="s-sub" id="ed-procsub">Four clear steps. No confusion. No bloat. Just results.</p>
+    <div class="process-row">
+      <div class="proc"><div class="proc-n">01</div><h4 id="p1t">Discovery Call</h4><p id="p1d">We learn your business, goals, and biggest challenges before touching a single pixel.</p><div class="proc-arr">→</div></div>
+      <div class="proc"><div class="proc-n">02</div><h4 id="p2t">Strategy & Plan</h4><p id="p2d">Custom roadmap with clear deliverables, timelines, and pricing. No surprises.</p><div class="proc-arr">→</div></div>
+      <div class="proc"><div class="proc-n">03</div><h4 id="p3t">Build & Launch</h4><p id="p3d">We build, you review, we refine. Launch when you're 100% happy.</p><div class="proc-arr">→</div></div>
+      <div class="proc"><div class="proc-n">04</div><h4 id="p4t">Grow & Optimize</h4><p id="p4d">We track results, test relentlessly, and optimize for compounding growth.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <h2 class="cta-h2">Ready to <em id="ed-ctaem">Grow</em>?</h2>
+  <p class="cta-p" id="ed-ctap">Drop your email below and we'll be in touch within 24 hours to book your free strategy call.</p>
+  <div class="email-row">
+    <input type="email" placeholder="your@email.com" id="emailIn"/>
+    <button onclick="handleEmail()">Let's Go →</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="f-logo">RevenueArce</div>
+  <p id="ed-fcopy">© 2026 Revenue Arce. All rights reserved.</p>
+  <ul class="f-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</footer>
+
+<!-- EDITOR TOGGLE -->
+<button id="editor-toggle" onclick="toggleEditor()">✏️ Edit Site</button>
+
+<!-- EDITOR PANEL -->
+<div id="editor-panel">
+  <div class="ep-head">
+    <h2>Site Editor</h2>
+    <button class="ep-close" onclick="toggleEditor()">✕</button>
+  </div>
+  <div class="ep-tabs">
+    <button class="ep-tab active" onclick="switchTab('content')">📝 Content</button>
+    <button class="ep-tab" onclick="switchTab('design')">🎨 Colors</button>
+    <button class="ep-tab" onclick="switchTab('typo')">🔤 Fonts</button>
+    <button class="ep-tab" onclick="switchTab('layout')">📐 Layout</button>
+    <button class="ep-tab" onclick="switchTab('fx')">✨ Effects</button>
+    <button class="ep-tab" onclick="switchTab('css')">⌨️ CSS</button>
+    <button class="ep-tab" onclick="switchTab('export')">💾 Export</button>
+  </div>
+  <div class="ep-body">
+
+    <!-- CONTENT -->
+    <div class="ep-pane active" id="pane-content">
+      <div class="ep-group">
+        <div class="ep-group-title">🏠 Site Identity</div>
+        <div class="field"><label>Page / Tab Title</label><input type="text" id="f-ptitle" value="Revenue Arce"/></div>
+        <div class="field"><label>Logo Text</label><input type="text" id="f-logo" value="RevenueArce"/></div>
+        <div class="col2">
+          <div class="field"><label>Nav Link 1</label><input type="text" id="f-nl1" value="Services"/></div>
+          <div class="field"><label>Nav Link 2</label><input type="text" id="f-nl2" value="Why Us"/></div>
+          <div class="field"><label>Nav Link 3</label><input type="text" id="f-nl3" value="Process"/></div>
+          <div class="field"><label>Nav Link 4</label><input type="text" id="f-nl4" value="Contact"/></div>
+        </div>
+        <div class="field"><label>Nav CTA Button</label><input type="text" id="f-navcta" value="Get Started"/></div>
+        <button class="ep-apply" onclick="applyIdentity()">Apply Identity</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🦸 Hero</div>
+        <div class="field"><label>Eyebrow Tag</label><input type="text" id="f-eyebrow" value="AI-Powered Growth Agency"/></div>
+        <div class="field"><label>Line 1 (white)</label><input type="text" id="f-l1" value="WE BUILD."/></div>
+        <div class="field"><label>Line 2 (gradient)</label><input type="text" id="f-l2" value="WE SCALE."/></div>
+        <div class="field"><label>Line 3 (ghost)</label><input type="text" id="f-l3" value="Revenue Arce"/></div>
+        <div class="field"><label>Description</label><textarea id="f-hdesc">Revenue Arce helps businesses grow with stunning websites, relentless social media strategy, and AI-powered systems that actually deliver results.</textarea></div>
+        <div class="col2">
+          <div class="field"><label>Button 1</label><input type="text" id="f-btn1" value="Explore Services"/></div>
+          <div class="field"><label>Button 2</label><input type="text" id="f-btn2" value="Let's Talk →"/></div>
+        </div>
+        <div class="ep-group-title" style="margin-top:.4rem">Badges</div>
+        <div class="col2">
+          <div class="field"><label>Badge 1 #</label><input type="text" id="f-b1n" value="50+"/></div>
+          <div class="field"><label>Badge 1 Label</label><input type="text" id="f-b1l" value="Projects Delivered"/></div>
+          <div class="field"><label>Badge 2 #</label><input type="text" id="f-b2n" value="3×"/></div>
+          <div class="field"><label>Badge 2 Label</label><input type="text" id="f-b2l" value="Revenue Growth"/></div>
+          <div class="field"><label>Badge 3 #</label><input type="text" id="f-b3n" value="7d"/></div>
+          <div class="field"><label>Badge 3 Label</label><input type="text" id="f-b3l" value="Avg Launch Time"/></div>
+        </div>
+        <button class="ep-apply" onclick="applyHero()">Apply Hero</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🛠 Services</div>
+        <div class="field"><label>Section Title</label><input type="text" id="f-svct" value="OUR SERVICES"/></div>
+        <div class="field"><label>Section Subtitle</label><textarea id="f-svcs">From your first impression online to your daily brand presence — we handle everything end to end.</textarea></div>
+        <div class="col2"><div class="field"><label>Svc 1 Icon</label><input type="text" id="f-s1i" value="🌐"/></div><div class="field"><label>Svc 1 Title</label><input type="text" id="f-s1t" value="Website Design & Dev"/></div></div>
+        <div class="field"><label>Svc 1 Description</label><textarea id="f-s1d">High-converting, jaw-dropping websites built fast. Optimized to impress, designed to perform.</textarea></div>
+        <div class="col2"><div class="field"><label>Svc 2 Icon</label><input type="text" id="f-s2i" value="📱"/></div><div class="field"><label>Svc 2 Title</label><input type="text" id="f-s2t" value="Social Media Mgmt"/></div></div>
+        <div class="field"><label>Svc 2 Description</label><textarea id="f-s2d">Consistent, engaging content across all platforms. We grow your audience and keep your brand top of mind.</textarea></div>
+        <div class="col2"><div class="field"><label>Svc 3 Icon</label><input type="text" id="f-s3i" value="🤖"/></div><div class="field"><label>Svc 3 Title</label><input type="text" id="f-s3t" value="AI Automation"/></div></div>
+        <div class="field"><label>Svc 3 Description</label><textarea id="f-s3d">Save time and scale faster. Chatbots, workflows, lead nurturing — all powered by the latest AI.</textarea></div>
+        <div class="col2"><div class="field"><label>Svc 4 Icon</label><input type="text" id="f-s4i" value="📈"/></div><div class="field"><label>Svc 4 Title</label><input type="text" id="f-s4t" value="SEO & Growth"/></div></div>
+        <div class="field"><label>Svc 4 Description</label><textarea id="f-s4d">Data-driven strategies that put you in front of the right audience. Real growth, measurable results.</textarea></div>
+        <div class="col2"><div class="field"><label>Svc 5 Icon</label><input type="text" id="f-s5i" value="🎨"/></div><div class="field"><label>Svc 5 Title</label><input type="text" id="f-s5t" value="Brand Identity"/></div></div>
+        <div class="field"><label>Svc 5 Description</label><textarea id="f-s5d">A brand that looks the part and tells a story. Logo, colors, type — built to stand out.</textarea></div>
+        <div class="col2"><div class="field"><label>Svc 6 Icon</label><input type="text" id="f-s6i" value="✍️"/></div><div class="field"><label>Svc 6 Title</label><input type="text" id="f-s6t" value="Content Creation"/></div></div>
+        <div class="field"><label>Svc 6 Description</label><textarea id="f-s6d">Scroll-stopping copy, graphics, and video — on-brand, on-message, every time.</textarea></div>
+        <button class="ep-apply" onclick="applyServices()">Apply Services</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">💡 Why Us</div>
+        <div class="field"><label>Big Stat</label><input type="text" id="f-whybig" value="100%"/></div>
+        <div class="field"><label>Description</label><textarea id="f-whyp">Custom strategy for every client. No templates — just work that actually moves the needle.</textarea></div>
+        <div class="col2">
+          <div class="field"><label>M1 #</label><input type="text" id="f-m1n" value="50+"/></div><div class="field"><label>M1 Label</label><input type="text" id="f-m1l" value="Projects Done"/></div>
+          <div class="field"><label>M2 #</label><input type="text" id="f-m2n" value="3×"/></div><div class="field"><label>M2 Label</label><input type="text" id="f-m2l" value="Revenue Growth"/></div>
+          <div class="field"><label>M3 #</label><input type="text" id="f-m3n" value="7d"/></div><div class="field"><label>M3 Label</label><input type="text" id="f-m3l" value="Launch Time"/></div>
+          <div class="field"><label>M4 #</label><input type="text" id="f-m4n" value="24/7"/></div><div class="field"><label>M4 Label</label><input type="text" id="f-m4l" value="Support"/></div>
+        </div>
+        <div class="ep-group-title" style="margin-top:.4rem">Points</div>
+        <div class="col2"><div class="field"><label>P1 Icon</label><input type="text" id="f-wp1i" value="⚡"/></div><div class="field"><label>P1 Title</label><input type="text" id="f-wp1t" value="Fast Turnarounds"/></div></div>
+        <div class="field"><label>P1 Desc</label><textarea id="f-wp1d">We move at the speed of business. Results in days, not months.</textarea></div>
+        <div class="col2"><div class="field"><label>P2 Icon</label><input type="text" id="f-wp2i" value="🎯"/></div><div class="field"><label>P2 Title</label><input type="text" id="f-wp2t" value="Revenue-Focused"/></div></div>
+        <div class="field"><label>P2 Desc</label><textarea id="f-wp2d">Everything we do ties back to one goal: growing your bottom line.</textarea></div>
+        <div class="col2"><div class="field"><label>P3 Icon</label><input type="text" id="f-wp3i" value="🤝"/></div><div class="field"><label>P3 Title</label><input type="text" id="f-wp3t" value="True Partnership"/></div></div>
+        <div class="field"><label>P3 Desc</label><textarea id="f-wp3d">We treat your business like our own — invested in your success every step of the way.</textarea></div>
+        <div class="col2"><div class="field"><label>P4 Icon</label><input type="text" id="f-wp4i" value="🔬"/></div><div class="field"><label>P4 Title</label><input type="text" id="f-wp4t" value="AI-Enhanced Work"/></div></div>
+        <div class="field"><label>P4 Desc</label><textarea id="f-wp4d">We leverage the latest AI tools to deliver better quality, faster, at competitive prices.</textarea></div>
+        <button class="ep-apply" onclick="applyWhy()">Apply Why Us</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">⚙️ Process</div>
+        <div class="field"><label>Title</label><input type="text" id="f-proctitle" value="THE PROCESS"/></div>
+        <div class="field"><label>Subtitle</label><textarea id="f-procsub">Four clear steps. No confusion. No bloat. Just results.</textarea></div>
+        <div class="col2">
+          <div class="field"><label>Step 1 Title</label><input type="text" id="f-p1t" value="Discovery Call"/></div>
+          <div class="field"><label>Step 2 Title</label><input type="text" id="f-p2t" value="Strategy & Plan"/></div>
+          <div class="field"><label>Step 3 Title</label><input type="text" id="f-p3t" value="Build & Launch"/></div>
+          <div class="field"><label>Step 4 Title</label><input type="text" id="f-p4t" value="Grow & Optimize"/></div>
+        </div>
+        <div class="field"><label>Step 1 Desc</label><textarea id="f-p1d">We learn your business, goals, and biggest challenges before touching a single pixel.</textarea></div>
+        <div class="field"><label>Step 2 Desc</label><textarea id="f-p2d">Custom roadmap with clear deliverables, timelines, and pricing. No surprises.</textarea></div>
+        <div class="field"><label>Step 3 Desc</label><textarea id="f-p3d">We build, you review, we refine. Launch when you're 100% happy.</textarea></div>
+        <div class="field"><label>Step 4 Desc</label><textarea id="f-p4d">We track results, test relentlessly, and optimize for compounding growth.</textarea></div>
+        <button class="ep-apply" onclick="applyProcess()">Apply Process</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">📣 CTA & Footer</div>
+        <div class="field"><label>CTA Highlight Word</label><input type="text" id="f-ctaem" value="Grow"/></div>
+        <div class="field"><label>CTA Subtext</label><textarea id="f-ctap">Drop your email below and we'll be in touch within 24 hours to book your free strategy call.</textarea></div>
+        <div class="field"><label>Footer Copyright</label><input type="text" id="f-fcopy" value="© 2026 Revenue Arce. All rights reserved."/></div>
+        <button class="ep-apply" onclick="applyCTA()">Apply CTA & Footer</button>
+      </div>
+    </div>
+
+    <!-- COLORS -->
+    <div class="ep-pane" id="pane-design">
+      <div class="ep-group">
+        <div class="ep-group-title">🎨 Brand Colors (live)</div>
+        <div class="field"><label>Accent — Cyan</label><input type="color" value="#00ffe1" oninput="cv('--accent',this.value)"/></div>
+        <div class="field"><label>Accent 2 — Pink</label><input type="color" value="#ff3cac" oninput="cv('--accent2',this.value)"/></div>
+        <div class="field"><label>Accent 3 — Gold</label><input type="color" value="#ffcc00" oninput="cv('--accent3',this.value)"/></div>
+        <div class="field"><label>Background</label><input type="color" id="c-c1" value="#0d0d0d" oninput="cv('--c1',this.value)"/></div>
+        <div class="field"><label>Card / Surface</label><input type="color" value="#111111" oninput="cv('--c2',this.value)"/></div>
+        <div class="field"><label>Text Color</label><input type="color" value="#f0ece3" oninput="cv('--text',this.value)"/></div>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🌌 3D Scene Colors</div>
+        <div class="field"><label>Geo Color 1</label><input type="color" id="c-geo1" value="#00ffe1" oninput="updateGeoColors()"/></div>
+        <div class="field"><label>Geo Color 2</label><input type="color" id="c-geo2" value="#ff3cac" oninput="updateGeoColors()"/></div>
+        <div class="field"><label>Geo Opacity</label><div class="rrow"><input type="range" min="0" max="40" value="12" id="r-geo" oninput="updateGeoOp();rv('rv-geo',this.value+'%')"/><span class="rval" id="rv-geo">12%</span></div></div>
+        <div class="field"><label>Particle Opacity</label><div class="rrow"><input type="range" min="0" max="100" value="35" id="r-part" oninput="updatePartOp();rv('rv-part',this.value+'%')"/><span class="rval" id="rv-part">35%</span></div></div>
+        <div class="field"><label>Particle Count</label><div class="rrow"><input type="range" min="100" max="4000" step="100" value="1200" id="r-pcount" oninput="rv('rv-pcount',this.value)"/><span class="rval" id="rv-pcount">1200</span></div></div>
+        <button class="ep-apply" onclick="rebuildScene()">Rebuild 3D Scene</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🔲 Borders</div>
+        <div class="field"><label>Border Opacity</label><div class="rrow"><input type="range" min="0" max="40" value="10" oninput="cv('--border-color','rgba(0,255,225,'+this.value/100+')');rv('rv-bord',this.value+'%')"/><span class="rval" id="rv-bord">10%</span></div></div>
+        <div class="field"><label>Card Radius (px)</label><div class="rrow"><input type="range" min="0" max="40" value="16" oninput="cv('--card-radius',this.value+'px');rv('rv-rad',this.value+'px')"/><span class="rval" id="rv-rad">16px</span></div></div>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🎨 One-Click Themes</div>
+        <div class="preset-grid">
+          <button class="ep-apply sec" onclick="preset('cyan')">🩵 Cyan / Pink</button>
+          <button class="ep-apply sec" onclick="preset('fire')">🔥 Fire</button>
+          <button class="ep-apply sec" onclick="preset('gold')">✨ Gold</button>
+          <button class="ep-apply sec" onclick="preset('violet')">💜 Violet</button>
+          <button class="ep-apply sec" onclick="preset('green')">🌿 Neon Green</button>
+          <button class="ep-apply sec" onclick="preset('ice')">🧊 Ice Blue</button>
+          <button class="ep-apply sec" onclick="preset('blood')">🩸 Blood Red</button>
+          <button class="ep-apply sec" onclick="preset('coral')">🪸 Coral</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TYPOGRAPHY -->
+    <div class="ep-pane" id="pane-typo">
+      <div class="ep-group">
+        <div class="ep-group-title">🔤 Fonts</div>
+        <div class="field"><label>Heading Font</label>
+          <select onchange="cv('--font-hero',this.value)">
+            <option value="'Bebas Neue',sans-serif">Bebas Neue</option>
+            <option value="'Playfair Display',serif">Playfair Display</option>
+            <option value="'Space Mono',monospace">Space Mono</option>
+            <option value="Impact,sans-serif">Impact</option>
+            <option value="Georgia,serif">Georgia</option>
+          </select>
+        </div>
+        <div class="field"><label>Body Font</label>
+          <select onchange="cv('--font-body',this.value)">
+            <option value="'Outfit',sans-serif">Outfit</option>
+            <option value="'Space Mono',monospace">Space Mono</option>
+            <option value="Georgia,serif">Georgia</option>
+            <option value="Arial,sans-serif">Arial</option>
+            <option value="'Courier New',monospace">Courier New</option>
+          </select>
+        </div>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">📐 Sizes & Spacing</div>
+        <div class="field"><label>Hero Font Size (vw)</label><div class="rrow"><input type="range" min="4" max="18" value="13" step=".5" oninput="cv('--hero-size','clamp(3rem,'+this.value+'vw,'+Math.round(this.value*10)+'rem)');rv('rv-hs',this.value+'vw')"/><span class="rval" id="rv-hs">13vw</span></div></div>
+        <div class="field"><label>Hero Letter Spacing</label><div class="rrow"><input type="range" min="-5" max="20" value="2" oninput="document.querySelector('.hero-h1').style.letterSpacing=(this.value/100)+'em';rv('rv-ls',(this.value/100)+'em')"/><span class="rval" id="rv-ls">0.02em</span></div></div>
+      </div>
+    </div>
+
+    <!-- LAYOUT -->
+    <div class="ep-pane" id="pane-layout">
+      <div class="ep-group">
+        <div class="ep-group-title">📐 Spacing</div>
+        <div class="field"><label>Section Padding (rem)</label><div class="rrow"><input type="range" min="3" max="15" value="9" oninput="cv('--section-pad',this.value+'rem 5rem');rv('rv-sp',this.value+'rem')"/><span class="rval" id="rv-sp">9rem</span></div></div>
+        <div class="field"><label>Nav Height (px)</label><div class="rrow"><input type="range" min="50" max="100" value="72" oninput="cv('--nav-height',this.value+'px');rv('rv-nh',this.value+'px')"/><span class="rval" id="rv-nh">72px</span></div></div>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🗂 Services Grid</div>
+        <div class="field"><label>Columns (desktop)</label>
+          <select onchange="document.querySelector('.services-grid').style.gridTemplateColumns='repeat('+this.value+',1fr)'">
+            <option value="3">3 Columns</option>
+            <option value="2">2 Columns</option>
+            <option value="1">1 Column</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- EFFECTS -->
+    <div class="ep-pane" id="pane-fx">
+      <div class="ep-group">
+        <div class="ep-group-title">✨ 3D Text Shadow</div>
+        <div class="field"><label>Shadow Depth (px)</label><div class="rrow"><input type="range" min="0" max="30" value="10" id="r-shd" oninput="updateShadow();rv('rv-shd',this.value+'px')"/><span class="rval" id="rv-shd">10px</span></div></div>
+        <div class="field"><label>Shadow Color</label><input type="color" id="c-shd" value="#00ffe1" oninput="updateShadow()"/></div>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🔄 Animation Speed</div>
+        <div class="field"><label>Geo Rotation</label><div class="rrow"><input type="range" min="0" max="20" value="3" oninput="gRS=this.value/1000;rv('rv-rot',this.value)"/><span class="rval" id="rv-rot">3</span></div></div>
+        <div class="field"><label>Geo Float Drift</label><div class="rrow"><input type="range" min="0" max="20" value="2" oninput="gDF=this.value/1000;rv('rv-dft',this.value)"/><span class="rval" id="rv-dft">2</span></div></div>
+        <div class="field"><label>Marquee Speed (s, lower=faster)</label><div class="rrow"><input type="range" min="5" max="60" value="20" oninput="document.querySelector('.marquee-inner').style.animationDuration=this.value+'s';rv('rv-mq',this.value+'s')"/><span class="rval" id="rv-mq">20s</span></div></div>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🎭 Show / Hide Elements</div>
+        <div class="tog-row"><input type="checkbox" checked onchange="toggleEl('.hero-badge',this.checked)"/><label>Hero Badges</label></div>
+        <div class="tog-row"><input type="checkbox" checked onchange="toggleEl('.scroll-hint',this.checked)"/><label>Scroll Hint</label></div>
+        <div class="tog-row"><input type="checkbox" checked onchange="document.getElementById('bg-canvas').style.display=this.checked?'block':'none'"/><label>3D Background</label></div>
+        <div class="tog-row"><input type="checkbox" checked onchange="document.querySelector('.marquee-wrap').style.display=this.checked?'block':'none'"/><label>Marquee Bar</label></div>
+        <div class="tog-row"><input type="checkbox" checked onchange="document.getElementById('editor-toggle').style.display=this.checked?'block':'none'"/><label>Edit Site Button</label></div>
+      </div>
+    </div>
+
+    <!-- CSS -->
+    <div class="ep-pane" id="pane-css">
+      <div class="ep-group">
+        <div class="ep-group-title">⌨️ Custom CSS</div>
+        <p class="hint">Type any CSS — injected live into the page instantly as you type. Overrides anything.</p>
+        <div class="field"><textarea id="f-css" style="min-height:200px;font-family:'Space Mono',monospace;font-size:.76rem" placeholder="/* Examples: */&#10;.hero-h1 { color: hotpink; }&#10;.svc { border-radius: 24px; }&#10;nav { background: #000; }&#10;body { background: #050505; }&#10;.btn-glow { border-radius: 0; }" oninput="injectCSS()"></textarea></div>
+        <button class="ep-apply sec" onclick="document.getElementById('f-css').value='';injectCSS()">✕ Clear Custom CSS</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">📖 CSS Variables Reference</div>
+        <div class="cref">--accent &nbsp; --accent2 &nbsp; --accent3<br>--c1 &nbsp; --c2 &nbsp; --c3 &nbsp; --text<br>--font-hero &nbsp; --font-body<br>--hero-size &nbsp; --section-pad<br>--card-radius &nbsp; --nav-height<br>--border-color &nbsp; --muted</div>
+      </div>
+    </div>
+
+    <!-- EXPORT -->
+    <div class="ep-pane" id="pane-export">
+      <div class="ep-group">
+        <div class="ep-group-title">💾 Download</div>
+        <p class="hint">Downloads your edited site as a single self-contained HTML file ready to deploy anywhere — Netlify, Vercel, GitHub Pages, cPanel, etc.</p>
+        <button class="ep-apply" onclick="exportSite()">⬇ Download HTML File</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">📋 Copy to Clipboard</div>
+        <button class="ep-apply sec" onclick="copyHTML()">📋 Copy Full HTML</button>
+      </div>
+      <div class="ep-group">
+        <div class="ep-group-title">🔄 Reset Everything</div>
+        <p class="hint">Reloads the page and discards all edits.</p>
+        <button class="ep-apply danger" onclick="if(confirm('Reset all changes to default?'))location.reload()">↺ Reset to Default</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style id="injected-css"></style>
+
+<script>
+/* CURSOR */
+const $cur=document.getElementById('cur'),curR=document.getElementById('curR');
+if($cur){let mx=0,my=0,rx=0,ry=0;document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;$cur.style.transform=`translate(${mx-5}px,${my-5}px)`;});function animR(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;curR.style.transform=`translate(${rx-18}px,${ry-18}px)`;requestAnimationFrame(animR);}animR();document.querySelectorAll('a,button,input,textarea,select').forEach(el=>{el.addEventListener('mouseenter',()=>{curR.style.width='56px';curR.style.height='56px';curR.style.opacity='.85';});el.addEventListener('mouseleave',()=>{curR.style.width='36px';curR.style.height='36px';curR.style.opacity='.45';});});}
+
+/* THREE */
+let renderer,scene,camera,objs=[],partMat,geoMats=[],gRS=.003,gDF=.002,animT=0;
+function hi(hex){return parseInt(hex.replace('#',''),16);}
+function buildScene(){
+  const cvs=document.getElementById('bg-canvas');
+  if(renderer)renderer.dispose();
+  renderer=new THREE.WebGLRenderer({canvas:cvs,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(innerWidth,innerHeight);
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,1000);
+  camera.position.z=5;
+  objs=[];geoMats=[];
+  const c1=hi(document.getElementById('c-geo1').value);
+  const c2=hi(document.getElementById('c-geo2').value);
+  const pct=parseInt(document.getElementById('r-pcount').value);
+  [new THREE.TorusGeometry(1.2,.3,16,60),new THREE.OctahedronGeometry(1.5),new THREE.TorusKnotGeometry(.8,.25,100,16),new THREE.IcosahedronGeometry(1.2)].forEach((g,i)=>{
+    const m=new THREE.MeshBasicMaterial({color:i%2===0?c1:c2,wireframe:true,transparent:true,opacity:.12});
+    geoMats.push(m);const mesh=new THREE.Mesh(g,m);
+    mesh.position.set((Math.random()-.5)*14,(Math.random()-.5)*9,(Math.random()-.5)*6-2);
+    scene.add(mesh);objs.push(mesh);
+  });
+  const pg=new THREE.BufferGeometry();const pp=new Float32Array(pct*3);
+  for(let i=0;i<pct*3;i++)pp[i]=(Math.random()-.5)*32;
+  pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+  partMat=new THREE.PointsMaterial({color:c1,size:.04,transparent:true,opacity:.35});
+  scene.add(new THREE.Points(pg,partMat));
+}
+let mX=0,mY=0;
+document.addEventListener('mousemove',e=>{mX=(e.clientX/innerWidth-.5)*2;mY=-(e.clientY/innerHeight-.5)*2;});
+window.addEventListener('resize',()=>{if(!camera||!renderer)return;camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+(function loop(){requestAnimationFrame(loop);if(!renderer)return;animT+=.003;objs.forEach((o,i)=>{o.rotation.x+=gRS*(i%2?-1:1);o.rotation.y+=gRS*1.3*(i%3?1:1.5);o.position.y+=Math.sin(animT+i)*gDF;});camera.position.x+=(mX*.4-camera.position.x)*.04;camera.position.y+=(mY*.4-camera.position.y)*.04;camera.lookAt(scene.position);renderer.render(scene,camera);})();
+buildScene();
+function rebuildScene(){buildScene();flash();}
+function updateGeoColors(){const c1=hi(document.getElementById('c-geo1').value);const c2=hi(document.getElementById('c-geo2').value);geoMats.forEach((m,i)=>m.color.setHex(i%2===0?c1:c2));if(partMat)partMat.color.setHex(c1);}
+function updateGeoOp(){geoMats.forEach(m=>m.opacity=parseInt(document.getElementById('r-geo').value)/100);}
+function updatePartOp(){if(partMat)partMat.opacity=parseInt(document.getElementById('r-part').value)/100;}
+
+/* EDITOR */
+function switchTab(id){
+  const keys=['content','design','typo','layout','fx','css','export'];
+  document.querySelectorAll('.ep-tab').forEach((t,i)=>t.classList.toggle('active',keys[i]===id));
+  document.querySelectorAll('.ep-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+}
+function toggleEditor(){document.getElementById('editor-panel').classList.toggle('open');}
+function toggleMobileNav(){document.getElementById('nav-mobile').classList.toggle('open');}
+function closeMobileNav(){document.getElementById('nav-mobile').classList.remove('open');}
+function scrollTo2(s){document.querySelector(s)?.scrollIntoView({behavior:'smooth'});closeMobileNav();}
+
+/* HELPERS */
+function st(id,v){const e=document.getElementById(id);if(e)e.textContent=v;}
+function gv(id){const e=document.getElementById(id);return e?e.value:'';}
+function cv(v,val){document.documentElement.style.setProperty(v,val);}
+function rv(id,val){const e=document.getElementById(id);if(e)e.textContent=val;}
+function flash(){document.body.style.outline='2px solid var(--accent)';setTimeout(()=>document.body.style.outline='',500);}
+function toggleEl(sel,show){document.querySelectorAll(sel).forEach(e=>e.style.display=show?'':'none');}
+
+/* APPLY */
+function applyIdentity(){document.getElementById('page-title').textContent=gv('f-ptitle');st('ed-logo',gv('f-logo'));[1,2,3,4].forEach(n=>st('nav-l'+n,gv('f-nl'+n)));st('ed-navcta',gv('f-navcta'));flash();}
+function applyHero(){st('ed-eyebrow',gv('f-eyebrow'));st('ed-l1',gv('f-l1'));st('ed-l2',gv('f-l2'));st('ed-l3',gv('f-l3'));st('ed-hdesc',gv('f-hdesc'));st('ed-btn1',gv('f-btn1'));st('ed-btn2',gv('f-btn2'));st('ed-b1n',gv('f-b1n'));st('ed-b1l',gv('f-b1l'));st('ed-b2n',gv('f-b2n'));st('ed-b2l',gv('f-b2l'));st('ed-b3n',gv('f-b3n'));st('ed-b3l',gv('f-b3l'));flash();}
+function applyServices(){st('ed-svctitle',gv('f-svct'));st('ed-svcsub',gv('f-svcs'));[1,2,3,4,5,6].forEach(n=>{st('s'+n+'i',gv('f-s'+n+'i'));st('s'+n+'t',gv('f-s'+n+'t'));st('s'+n+'d',gv('f-s'+n+'d'));});flash();}
+function applyWhy(){st('ed-whybig',gv('f-whybig'));st('ed-whyp',gv('f-whyp'));[1,2,3,4].forEach(n=>{st('ed-m'+n+'n',gv('f-m'+n+'n'));st('ed-m'+n+'l',gv('f-m'+n+'l'));st('wp'+n+'i',gv('f-wp'+n+'i'));st('wp'+n+'t',gv('f-wp'+n+'t'));st('wp'+n+'d',gv('f-wp'+n+'d'));});flash();}
+function applyProcess(){st('ed-proctitle',gv('f-proctitle'));st('ed-procsub',gv('f-procsub'));[1,2,3,4].forEach(n=>{st('p'+n+'t',gv('f-p'+n+'t'));st('p'+n+'d',gv('f-p'+n+'d'));});flash();}
+function applyCTA(){st('ed-ctaem',gv('f-ctaem'));st('ed-ctap',gv('f-ctap'));st('ed-fcopy',gv('f-fcopy'));flash();}
+
+/* SHADOW */
+function updateShadow(){
+  const d=parseInt(document.getElementById('r-shd').value);
+  const hex=document.getElementById('c-shd').value;
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  let sh=[];for(let i=1;i<=d;i++)sh.push(`${i}px ${i}px 0 rgba(${r},${g},${b},${Math.max(.02,.2-i*.015)})`);
+  sh.push(`${d+4}px ${d+4}px 16px rgba(0,0,0,.6)`);
+  const s=sh.join(',');document.querySelectorAll('.shadow-text').forEach(e=>e.style.textShadow=s);
+}
+
+/* PRESETS */
+const PRESETS={
+  cyan:{a:'#00ffe1',b:'#ff3cac',c:'#ffcc00',bg:'#0d0d0d',card:'#111111',tx:'#f0ece3'},
+  fire:{a:'#ff6b00',b:'#ff0040',c:'#ffcc00',bg:'#0f0800',card:'#170b00',tx:'#fff5e6'},
+  gold:{a:'#ffd700',b:'#ff8c00',c:'#fff700',bg:'#0c0900',card:'#140f00',tx:'#fffbe6'},
+  violet:{a:'#b44fff',b:'#7b2fff',c:'#ff44cc',bg:'#09070f',card:'#110d1a',tx:'#f5f0ff'},
+  green:{a:'#00ff88',b:'#00e5ff',c:'#aaff00',bg:'#03100a',card:'#071510',tx:'#e6fff2'},
+  ice:{a:'#7df9ff',b:'#b0e0ff',c:'#ffffff',bg:'#040d12',card:'#081520',tx:'#e8f8ff'},
+  blood:{a:'#ff2020',b:'#ff6600',c:'#ffcc00',bg:'#0f0000',card:'#180000',tx:'#ffe8e8'},
+  coral:{a:'#ff6b6b',b:'#ffa07a',c:'#ffd700',bg:'#0f0808',card:'#160c0c',tx:'#fff0ee'},
+};
+function preset(name){
+  const p=PRESETS[name];if(!p)return;
+  cv('--accent',p.a);cv('--accent2',p.b);cv('--accent3',p.c);
+  cv('--c1',p.bg);cv('--c2',p.card);cv('--text',p.tx);
+  document.getElementById('c-geo1').value=p.a;document.getElementById('c-geo2').value=p.b;
+  updateGeoColors();updateShadow();flash();
+}
+
+/* CUSTOM CSS (live as you type) */
+function injectCSS(){document.getElementById('injected-css').textContent=document.getElementById('f-css').value;}
+
+/* EMAIL */
+function handleEmail(){const v=document.getElementById('emailIn').value;if(v&&v.includes('@')){alert('🚀 Got it! We\'ll reach out to '+v+' within 24 hours.');document.getElementById('emailIn').value='';}else{const e=document.getElementById('emailIn');e.style.outline='2px solid var(--accent2)';setTimeout(()=>e.style.outline='',1000);}}
+
+/* EXPORT */
+function exportSite(){
+  const rv=document.getElementById('root-vars');
+  const cs=getComputedStyle(document.documentElement);
+  const vars=['--accent','--accent2','--accent3','--c1','--c2','--c3','--text','--font-hero','--font-body','--hero-size','--section-pad','--card-radius','--nav-height','--border-color'];
+  let css=':root{\n';vars.forEach(v=>css+=`  ${v}:${cs.getPropertyValue(v).trim()};\n`);css+='}';
+  rv.textContent=css;
+  const html=document.documentElement.outerHTML;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='revenue-arce.html';a.click();URL.revokeObjectURL(a.href);
+}
+async function copyHTML(){try{await navigator.clipboard.writeText(document.documentElement.outerHTML);alert('✅ Copied to clipboard!');}catch(e){alert('Could not copy — use Download instead.');}}
+</script>
+</body>
+</html>
