@@ -223,6 +223,87 @@ footer p{font-size:.76rem;opacity:.22}
   .email-row button{padding:.9rem}
   .ep-tab{font-size:.58rem;padding:.6rem .65rem}
 }
+
+/* PRICING */
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.price-card{background:var(--c2);border:1px solid rgba(255,255,255,.07);border-radius:var(--card-radius);padding:2.5rem 2rem;position:relative;transition:border-color .3s,transform .3s;overflow:hidden}
+.price-card:hover{border-color:rgba(0,255,225,.3);transform:translateY(-6px)}
+.price-card.featured{border-color:rgba(0,255,225,.35);background:linear-gradient(135deg,rgba(0,255,225,.06),rgba(255,60,172,.04))}
+.price-card.featured::before{content:'MOST POPULAR';position:absolute;top:1.2rem;right:-2.2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-size:.55rem;font-weight:700;letter-spacing:.12em;padding:.3rem 2.5rem;transform:rotate(35deg);transform-origin:center}
+.price-name{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);opacity:.8;margin-bottom:.8rem}
+.price-amount{font-family:var(--font-hero);font-size:3.5rem;line-height:1;letter-spacing:-.02em;margin-bottom:.4rem}
+.price-amount span{font-size:1.2rem;opacity:.5;font-family:var(--font-body);font-weight:400}
+.price-desc{font-size:.85rem;opacity:.45;line-height:1.65;margin-bottom:1.8rem}
+.price-features{list-style:none;margin-bottom:2rem}
+.price-features li{font-size:.85rem;opacity:.6;padding:.5rem 0;border-bottom:1px solid rgba(255,255,255,.05);display:flex;align-items:center;gap:.7rem}
+.price-features li::before{content:'✓';color:var(--accent);font-weight:700;flex-shrink:0}
+.price-features li.no{opacity:.3}
+.price-features li.no::before{content:'✕';color:var(--accent2)}
+.price-btn{width:100%;padding:.9rem;background:transparent;border:1.5px solid rgba(255,255,255,.15);color:var(--text);font-family:var(--font-body);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;transition:all .25s}
+.price-card.featured .price-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#000}
+.price-card:hover .price-btn{border-color:var(--accent);color:var(--accent)}
+.price-card.featured:hover .price-btn{opacity:.88}
+
+/* PORTFOLIO */
+.portfolio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.port-card{background:var(--c2);border:1px solid rgba(255,255,255,.06);border-radius:var(--card-radius);overflow:hidden;transition:border-color .3s,transform .3s;cursor:pointer}
+.port-card:hover{border-color:rgba(0,255,225,.25);transform:translateY(-5px)}
+.port-thumb{height:180px;background:linear-gradient(135deg,rgba(0,255,225,.08),rgba(255,60,172,.08));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.port-thumb-icon{font-size:3rem;opacity:.3}
+.port-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,255,225,.15),rgba(255,60,172,.15));opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center}
+.port-card:hover .port-overlay{opacity:1}
+.port-overlay span{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:#fff;font-weight:600;background:rgba(0,0,0,.5);padding:.5rem 1rem;border-radius:20px}
+.port-info{padding:1.5rem}
+.port-tag{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:.7;margin-bottom:.5rem}
+.port-title{font-weight:600;font-size:.95rem;margin-bottom:.4rem}
+.port-desc{font-size:.82rem;opacity:.45;line-height:1.6}
+.port-empty{text-align:center;padding:5rem 2rem;opacity:.25;grid-column:1/-1}
+.port-empty p{font-size:.9rem;margin-top:.8rem;line-height:1.6}
+
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.testi-card{background:var(--c2);border:1px solid rgba(255,255,255,.06);border-radius:var(--card-radius);padding:2rem;position:relative;transition:border-color .3s}
+.testi-card:hover{border-color:rgba(0,255,225,.2)}
+.testi-card::before{content:'"';font-family:var(--font-hero);font-size:6rem;line-height:.7;color:var(--accent);opacity:.1;position:absolute;top:1rem;left:1.5rem}
+.testi-text{font-size:.92rem;line-height:1.75;opacity:.7;margin-bottom:1.5rem;font-style:italic;position:relative;z-index:1}
+.testi-author{display:flex;align-items:center;gap:.9rem}
+.testi-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#000;flex-shrink:0}
+.testi-name{font-weight:600;font-size:.88rem}
+.testi-role{font-size:.75rem;opacity:.4;margin-top:.1rem}
+.stars{color:var(--accent3);font-size:.85rem;margin-bottom:1rem;letter-spacing:.1em}
+
+/* mobile new sections */
+@media(max-width:900px){
+  .pricing-grid{grid-template-columns:1fr}
+  .portfolio-grid{grid-template-columns:1fr 1fr}
+  .testi-grid{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .portfolio-grid{grid-template-columns:1fr}
+}
+
+/* GOOGLE FORM SECTION */
+.gform-section{position:relative;z-index:1;padding:var(--section-pad);background:linear-gradient(135deg,rgba(0,255,225,.03),rgba(255,60,172,.03))}
+.gform-wrap{display:grid;grid-template-columns:1fr 1.4fr;gap:5rem;align-items:start;max-width:1200px;margin:0 auto}
+.gform-left{position:sticky;top:calc(var(--nav-height) + 2rem)}
+.gform-left .s-label{margin-bottom:.9rem}
+.gform-left .s-title{margin-bottom:1rem}
+.gform-left .s-sub{margin-bottom:2rem}
+.gform-perks{display:flex;flex-direction:column;gap:1rem;margin-top:2rem}
+.gform-perk{display:flex;align-items:center;gap:.9rem;font-size:.88rem;opacity:.6}
+.gform-perk-icon{width:36px;height:36px;border-radius:8px;background:rgba(0,255,225,.08);border:1px solid rgba(0,255,225,.12);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.gform-frame-wrap{background:rgba(255,255,255,.02);border:1px solid rgba(0,255,225,.12);border-radius:20px;overflow:hidden;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.4)}
+.gform-frame-wrap::before{content:'Contact Form';position:absolute;top:0;left:0;right:0;padding:.75rem 1.2rem;background:rgba(0,0,0,.4);backdrop-filter:blur(10px);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);opacity:.7;border-bottom:1px solid rgba(0,255,225,.1);z-index:2}
+.gform-frame-wrap iframe{display:block;width:100%;height:780px;border:none;margin-top:2.5rem;filter:invert(1) hue-rotate(180deg);opacity:.92}
+.gform-frame-wrap iframe.light-mode{filter:none}
+@media(max-width:900px){
+  .gform-wrap{grid-template-columns:1fr;gap:2.5rem}
+  .gform-left{position:static}
+  .gform-frame-wrap iframe{height:700px}
+}
+@media(max-width:560px){
+  .gform-frame-wrap iframe{height:650px}
+}
 </style>
 </head>
 <body>
@@ -236,8 +317,8 @@ footer p{font-size:.76rem;opacity:.22}
   <div class="logo" id="ed-logo">RevenueArce</div>
   <ul class="nav-links">
     <li><a href="#services" id="nav-l1">Services</a></li>
-    <li><a href="#why" id="nav-l2">Why Us</a></li>
-    <li><a href="#process" id="nav-l3">Process</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#portfolio">Work</a></li>
     <li><a href="#contact" id="nav-l4">Contact</a></li>
   </ul>
   <button class="nav-cta" id="ed-navcta" onclick="scrollTo2('#contact')">Get Started</button>
@@ -342,13 +423,148 @@ footer p{font-size:.76rem;opacity:.22}
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section" id="contact">
+
+<!-- PRICING -->
+<section id="pricing" style="background:rgba(0,255,225,.015)">
+  <div class="section-inner">
+    <div class="s-label">Investment</div>
+    <h2 class="s-title shadow-text" id="ed-pricingtitle">PRICING PLANS</h2>
+    <p class="s-sub" id="ed-pricingsub">Transparent pricing for every stage of your business. No hidden fees, no surprises.</p>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name" id="p1name">Starter</div>
+        <div class="price-amount" id="p1price">₹15,000<span>/project</span></div>
+        <p class="price-desc" id="p1desc">Perfect for small businesses just getting started online.</p>
+        <ul class="price-features" id="p1features">
+          <li>5-page Website</li>
+          <li>Mobile Responsive</li>
+          <li>Basic SEO Setup</li>
+          <li>Contact Form</li>
+          <li>1 Month Support</li>
+          <li class="no">Social Media Mgmt</li>
+          <li class="no">AI Automation</li>
+        </ul>
+        <button class="price-btn" onclick="openContactModal()">Get Started</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-name" id="p2name">Growth</div>
+        <div class="price-amount" id="p2price">₹35,000<span>/month</span></div>
+        <p class="price-desc" id="p2desc">For growing businesses that need a full digital presence.</p>
+        <ul class="price-features" id="p2features">
+          <li>Custom Website</li>
+          <li>Social Media (3 platforms)</li>
+          <li>12 Posts/Month</li>
+          <li>SEO & Analytics</li>
+          <li>Monthly Reports</li>
+          <li>3 Months Support</li>
+          <li class="no">AI Automation</li>
+        </ul>
+        <button class="price-btn" onclick="openContactModal()">Most Popular</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name" id="p3name">Premium</div>
+        <div class="price-amount" id="p3price">Contact Us</div>
+        <p class="price-desc" id="p3desc">Full-service AI-powered growth for serious businesses.</p>
+        <ul class="price-features" id="p3features">
+          <li>Everything in Growth</li>
+          <li>AI Chatbot & Automation</li>
+          <li>Paid Ads Management</li>
+          <li>Brand Identity</li>
+          <li>Priority Support 24/7</li>
+          <li>Dedicated Account Manager</li>
+          <li>Custom Integrations</li>
+        </ul>
+        <button class="price-btn" onclick="openContactModal()">Let's Talk</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-inner">
+    <div class="s-label">Our Work</div>
+    <h2 class="s-title shadow-text" id="ed-portfoliotitle">PORTFOLIO</h2>
+    <p class="s-sub" id="ed-portfoliosub">Projects we're proud of. Results we stand behind.</p>
+    <div class="portfolio-grid" id="portfolio-grid">
+      <div class="port-empty">
+        <div style="font-size:3rem">🚀</div>
+        <p>Portfolio coming soon.<br/>Your first project could be featured here!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" style="background:rgba(255,60,172,.02)">
+  <div class="section-inner">
+    <div class="s-label">Client Love</div>
+    <h2 class="s-title shadow-text" id="ed-testititle">WHAT CLIENTS SAY</h2>
+    <p class="s-sub" id="ed-testisub">Don't take our word for it — hear it from the people we've worked with.</p>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="stars" id="t1stars">★★★★★</div>
+        <p class="testi-text" id="t1text">"Revenue Arce completely transformed our online presence. Our website looks stunning and we've seen a 3x increase in leads since launch."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" id="t1av">R</div>
+          <div><div class="testi-name" id="t1name">Rahul Sharma</div><div class="testi-role" id="t1role">CEO, TechStartup India</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars" id="t2stars">★★★★★</div>
+        <p class="testi-text" id="t2text">"The social media management service is incredible. Our Instagram went from 200 to 5,000 followers in just 3 months. Highly recommended!"</p>
+        <div class="testi-author">
+          <div class="testi-avatar" id="t2av">P</div>
+          <div><div class="testi-name" id="t2name">Priya Mehta</div><div class="testi-role" id="t2role">Founder, StyleBoutique</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="stars" id="t3stars">★★★★★</div>
+        <p class="testi-text" id="t3text">"The AI automation they set up saves us 20 hours a week. The team is responsive, professional and genuinely cares about results."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" id="t3av">A</div>
+          <div><div class="testi-name" id="t3name">Arjun Patel</div><div class="testi-role" id="t3role">Director, GrowthCo</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-section" id="cta-banner">
   <h2 class="cta-h2">Ready to <em id="ed-ctaem">Grow</em>?</h2>
-  <p class="cta-p" id="ed-ctap">Drop your email below and we'll be in touch within 24 hours to book your free strategy call.</p>
-  <div class="email-row">
-    <input type="email" placeholder="your@email.com" id="emailIn"/>
-    <button onclick="handleEmail()">Let's Go →</button>
+  <p class="cta-p" id="ed-ctap">Fill in the form below and we'll get back to you within 24 hours.</p>
+  <a href="#contact" class="btn-glow" style="display:inline-block;margin-top:.5rem">Get In Touch ↓</a>
+</section>
+
+<!-- CONTACT FORM (Google Form Embed) -->
+<section class="gform-section" id="contact">
+  <div class="gform-wrap">
+    <div class="gform-left">
+      <div class="s-label">Get In Touch</div>
+      <h2 class="s-title shadow-text">START YOUR<br/><span style="background:linear-gradient(135deg,var(--accent2),var(--accent3),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent">JOURNEY</span></h2>
+      <p class="s-sub">Fill in the form and we'll get back to you within 24 hours with a custom plan for your business.</p>
+      <div class="gform-perks">
+        <div class="gform-perk"><div class="gform-perk-icon">⚡</div>Response within 24 hours</div>
+        <div class="gform-perk"><div class="gform-perk-icon">🎯</div>Free strategy consultation</div>
+        <div class="gform-perk"><div class="gform-perk-icon">💰</div>No obligation, no pressure</div>
+        <div class="gform-perk"><div class="gform-perk-icon">🔒</div>Your data is safe with us</div>
+      </div>
+      <div style="margin-top:2.5rem;padding:1.5rem;background:rgba(0,255,225,.05);border:1px solid rgba(0,255,225,.12);border-radius:12px">
+        <div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);opacity:.7;margin-bottom:.6rem">Or reach us directly</div>
+        <a href="mailto:tanvichauhan622@gmail.com" style="color:var(--text);text-decoration:none;font-size:.9rem;opacity:.7;display:block;margin-bottom:.4rem;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">✉️ tanvichauhan622@gmail.com</a>
+        <a href="https://wa.me/91XXXXXXXXXX" style="color:var(--text);text-decoration:none;font-size:.9rem;opacity:.7;display:block;transition:opacity .2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.7">💬 WhatsApp Us</a>
+      </div>
+    </div>
+    <div class="gform-frame-wrap">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLScaCkHqgRFoVYW6N61GEw7y1tHb_Y70Qga0Iu8ZOi7YAF0vFw/viewform?embedded=true"
+        title="Contact Form"
+        loading="lazy"
+        id="gform-iframe">
+        Loading form...
+      </iframe>
+    </div>
   </div>
 </section>
 
@@ -360,6 +576,8 @@ footer p{font-size:.76rem;opacity:.22}
     <li><a href="#services">Services</a></li>
     <li><a href="#why">About</a></li>
     <li><a href="#contact">Contact</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#portfolio">Work</a></li>
   </ul>
 </footer>
 
@@ -501,6 +719,38 @@ footer p{font-size:.76rem;opacity:.22}
         <div class="field"><label>Step 3 Desc</label><textarea id="f-p3d">We build, you review, we refine. Launch when you're 100% happy.</textarea></div>
         <div class="field"><label>Step 4 Desc</label><textarea id="f-p4d">We track results, test relentlessly, and optimize for compounding growth.</textarea></div>
         <button class="ep-apply" onclick="applyProcess()">Apply Process</button>
+      </div>
+
+      <div class="ep-group">
+        <div class="ep-group-title">💰 Pricing</div>
+        <div class="field"><label>Section Title</label><input type="text" id="f-pricingtitle" value="PRICING PLANS"/></div>
+        <div class="field"><label>Section Subtitle</label><textarea id="f-pricingsub">Transparent pricing for every stage of your business. No hidden fees, no surprises.</textarea></div>
+        <div class="ep-group-title" style="margin-top:.4rem">Package 1</div>
+        <div class="col2"><div class="field"><label>Name</label><input type="text" id="f-p1name" value="Starter"/></div><div class="field"><label>Price</label><input type="text" id="f-p1price" value="₹15,000"/></div></div>
+        <div class="field"><label>Description</label><textarea id="f-p1desc">Perfect for small businesses just getting started online.</textarea></div>
+        <div class="ep-group-title" style="margin-top:.4rem">Package 2 (Featured)</div>
+        <div class="col2"><div class="field"><label>Name</label><input type="text" id="f-p2name" value="Growth"/></div><div class="field"><label>Price</label><input type="text" id="f-p2price" value="₹35,000"/></div></div>
+        <div class="field"><label>Description</label><textarea id="f-p2desc">For growing businesses that need a full digital presence.</textarea></div>
+        <div class="ep-group-title" style="margin-top:.4rem">Package 3</div>
+        <div class="col2"><div class="field"><label>Name</label><input type="text" id="f-p3name" value="Premium"/></div><div class="field"><label>Price</label><input type="text" id="f-p3price" value="Contact Us"/></div></div>
+        <div class="field"><label>Description</label><textarea id="f-p3desc">Full-service AI-powered growth for serious businesses.</textarea></div>
+        <button class="ep-apply" onclick="applyPricing()">Apply Pricing</button>
+      </div>
+
+      <div class="ep-group">
+        <div class="ep-group-title">⭐ Testimonials</div>
+        <div class="field"><label>Section Title</label><input type="text" id="f-testititle" value="WHAT CLIENTS SAY"/></div>
+        <div class="field"><label>Section Subtitle</label><textarea id="f-testisub">Don't take our word for it — hear it from the people we've worked with.</textarea></div>
+        <div class="ep-group-title" style="margin-top:.4rem">Review 1</div>
+        <div class="col2"><div class="field"><label>Name</label><input type="text" id="f-t1name" value="Rahul Sharma"/></div><div class="field"><label>Role</label><input type="text" id="f-t1role" value="CEO, TechStartup India"/></div></div>
+        <div class="field"><label>Review Text</label><textarea id="f-t1text">Revenue Arce completely transformed our online presence. Our website looks stunning and we've seen a 3x increase in leads since launch.</textarea></div>
+        <div class="ep-group-title" style="margin-top:.4rem">Review 2</div>
+        <div class="col2"><div class="field"><label>Name</label><input type="text" id="f-t2name" value="Priya Mehta"/></div><div class="field"><label>Role</label><input type="text" id="f-t2role" value="Founder, StyleBoutique"/></div></div>
+        <div class="field"><label>Review Text</label><textarea id="f-t2text">The social media management service is incredible. Our Instagram went from 200 to 5,000 followers in just 3 months.</textarea></div>
+        <div class="ep-group-title" style="margin-top:.4rem">Review 3</div>
+        <div class="col2"><div class="field"><label>Name</label><input type="text" id="f-t3name" value="Arjun Patel"/></div><div class="field"><label>Role</label><input type="text" id="f-t3role" value="Director, GrowthCo"/></div></div>
+        <div class="field"><label>Review Text</label><textarea id="f-t3text">The AI automation they set up saves us 20 hours a week. The team is responsive, professional and genuinely cares about results.</textarea></div>
+        <button class="ep-apply" onclick="applyTestimonials()">Apply Testimonials</button>
       </div>
       <div class="ep-group">
         <div class="ep-group-title">📣 CTA & Footer</div>
@@ -777,6 +1027,7 @@ function checkAuth(){
   if(ADMIN_TOKEN){
     btn.style.display='block';
     btn.innerHTML='✏️ Edit Site';
+    populateEditorFields();
   } else {
     btn.style.display='none';
   }
@@ -843,7 +1094,72 @@ async function loadCMS(){
       if(id.navCta)st('ed-navcta',id.navCta);
       if(id.navLinks){id.navLinks.forEach((l,i)=>{st('nav-l'+(i+1),l);});}
     }
+    const pricing=content.pricing;
+    if(pricing){
+      if(pricing.title)st('ed-pricingtitle',pricing.title);
+      if(pricing.subtitle)st('ed-pricingsub',pricing.subtitle);
+      if(pricing.packages){
+        const pp=pricing.packages;
+        if(pp[0]){st('p1name',pp[0].name);st('p1price',pp[0].price);st('p1desc',pp[0].desc);}
+        if(pp[1]){st('p2name',pp[1].name);st('p2price',pp[1].price);st('p2desc',pp[1].desc);}
+        if(pp[2]){st('p3name',pp[2].name);st('p3price',pp[2].price);st('p3desc',pp[2].desc);}
+      }
+    }
+    const testi=content.testimonials;
+    if(testi){
+      if(testi.title)st('ed-testititle',testi.title);
+      if(testi.subtitle)st('ed-testisub',testi.subtitle);
+      if(testi.items){testi.items.forEach((t,i)=>{const n=i+1;st('t'+n+'name',t.name);st('t'+n+'role',t.role);st('t'+n+'text',t.text);st('t'+n+'av',(t.name||'?').charAt(0).toUpperCase());});}
+    }
   }catch(e){console.log('CMS offline, using defaults');}
+}
+
+/* ══════════════════════════════════════
+   POPULATE EDITOR FIELDS FROM CMS
+══════════════════════════════════════ */
+async function populateEditorFields(){
+  try{
+    const r=await fetch(`${API}/api/cms`);
+    const {content}=await r.json();
+    if(!content)return;
+    const h=content.hero||{};
+    const sv=(id,val)=>{const el=document.getElementById(id);if(el&&val!==undefined)el.value=val;};
+    const sta=(id,val)=>{const el=document.getElementById(id);if(el&&val!==undefined)el.value=val;};
+    // Hero fields
+    sv('f-eyebrow',h.eyebrow);sv('f-l1',h.line1);sv('f-l2',h.line2);sv('f-l3',h.line3);
+    sv('f-hdesc',h.description);sv('f-btn1',h.button1);sv('f-btn2',h.button2);
+    if(h.badge1){sv('f-b1n',h.badge1.num);sv('f-b1l',h.badge1.label);}
+    if(h.badge2){sv('f-b2n',h.badge2.num);sv('f-b2l',h.badge2.label);}
+    if(h.badge3){sv('f-b3n',h.badge3.num);sv('f-b3l',h.badge3.label);}
+    // Services
+    const s=content.services||{};
+    sv('f-svct',s.title);sv('f-svcs',s.subtitle);
+    if(s.items){s.items.forEach((item,i)=>{const n=i+1;sv('f-s'+n+'i',item.icon);sv('f-s'+n+'t',item.title);sv('f-s'+n+'d',item.description);});}
+    // Why
+    const w=content.why||{};
+    sv('f-whybig',w.bigStat);sv('f-whyp',w.description);
+    if(w.metrics){w.metrics.forEach((m,i)=>{sv('f-m'+(i+1)+'n',m.num);sv('f-m'+(i+1)+'l',m.label);});}
+    if(w.points){w.points.forEach((p,i)=>{sv('f-wp'+(i+1)+'i',p.icon);sv('f-wp'+(i+1)+'t',p.title);sv('f-wp'+(i+1)+'d',p.description);});}
+    // Process
+    const pr=content.process||{};
+    sv('f-proctitle',pr.title);sv('f-procsub',pr.subtitle);
+    if(pr.steps){pr.steps.forEach((st,i)=>{sv('f-p'+(i+1)+'t',st.title);sv('f-p'+(i+1)+'d',st.description);});}
+    // CTA
+    const c=content.cta||{};
+    sv('f-ctaem',c.highlightWord);sv('f-ctap',c.subtitle);sv('f-fcopy',c.footerCopy);
+    // Identity
+    const id=content.identity||{};
+    sv('f-logo',id.logo);sv('f-ptitle',id.pageTitle);sv('f-navcta',id.navCta);
+    if(id.navLinks){id.navLinks.forEach((l,i)=>sv('f-nl'+(i+1),l));}
+    // Pricing
+    const pricing=content.pricing||{};
+    sv('f-pricingtitle',pricing.title);sv('f-pricingsub',pricing.subtitle);
+    if(pricing.packages){pricing.packages.forEach((p,i)=>{const n=i+1;sv('f-p'+n+'name',p.name);sv('f-p'+n+'price',p.price);sv('f-p'+n+'desc',p.desc);});}
+    // Testimonials
+    const testi=content.testimonials||{};
+    sv('f-testititle',testi.title);sv('f-testisub',testi.subtitle);
+    if(testi.items){testi.items.forEach((t,i)=>{const n=i+1;sv('f-t'+n+'name',t.name);sv('f-t'+n+'role',t.role);sv('f-t'+n+'text',t.text);});}
+  }catch(e){console.log('Could not populate editor fields');}
 }
 
 /* ══════════════════════════════════════
@@ -982,6 +1298,42 @@ function handleEmail(){
   document.getElementById('cf-email').value=email;
   document.getElementById('emailIn').value='';
   openContactModal();
+}
+
+
+/* ══════════════════════════════════════
+   APPLY PRICING & TESTIMONIALS
+══════════════════════════════════════ */
+function applyPricing(){
+  st('ed-pricingtitle',gv('f-pricingtitle'));
+  st('ed-pricingsub',gv('f-pricingsub'));
+  st('p1name',gv('f-p1name'));st('p1price',gv('f-p1price'));st('p1desc',gv('f-p1desc'));
+  st('p2name',gv('f-p2name'));st('p2price',gv('f-p2price'));st('p2desc',gv('f-p2desc'));
+  st('p3name',gv('f-p3name'));st('p3price',gv('f-p3price'));st('p3desc',gv('f-p3desc'));
+  saveToBackend('pricing',{
+    title:gv('f-pricingtitle'),subtitle:gv('f-pricingsub'),
+    packages:[
+      {name:gv('f-p1name'),price:gv('f-p1price'),desc:gv('f-p1desc')},
+      {name:gv('f-p2name'),price:gv('f-p2price'),desc:gv('f-p2desc')},
+      {name:gv('f-p3name'),price:gv('f-p3price'),desc:gv('f-p3desc')},
+    ]
+  });
+  flash();
+}
+
+function applyTestimonials(){
+  st('ed-testititle',gv('f-testititle'));st('ed-testisub',gv('f-testisub'));
+  [1,2,3].forEach(n=>{
+    st('t'+n+'name',gv('f-t'+n+'name'));
+    st('t'+n+'role',gv('f-t'+n+'role'));
+    st('t'+n+'text',gv('f-t'+n+'text'));
+    st('t'+n+'av',gv('f-t'+n+'name').charAt(0).toUpperCase());
+  });
+  saveToBackend('testimonials',{
+    title:gv('f-testititle'),subtitle:gv('f-testisub'),
+    items:[1,2,3].map(n=>({name:gv('f-t'+n+'name'),role:gv('f-t'+n+'role'),text:gv('f-t'+n+'text')}))
+  });
+  flash();
 }
 
 /* ══════════════════════════════════════
