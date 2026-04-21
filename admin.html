@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Revenue Arce — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--accent:#00ffe1;--accent2:#ff3cac;--bg:#080808;--card:#0f0f0f;--card2:#141414;--text:#f0ece3;--muted:rgba(240,236,227,0.45);--border:rgba(255,255,255,0.07)}
+html,body{min-height:100vh;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── LOGIN PAGE ── */
+#login-page{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;background:radial-gradient(ellipse at top,rgba(0,255,225,.06) 0%,transparent 60%)}
+.login-box{background:var(--card);border:1px solid rgba(0,255,225,.12);border-radius:20px;padding:3rem 2.5rem;width:100%;max-width:420px;box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.login-logo{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:.05em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:.3rem}
+.login-sub{font-size:.8rem;opacity:.4;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2.5rem}
+.lfield{margin-bottom:1.2rem}
+.lfield label{display:block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;opacity:.4;margin-bottom:.4rem}
+.lfield input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:.8rem 1rem;color:var(--text);font-family:'Outfit',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s}
+.lfield input:focus{border-color:rgba(0,255,225,.4)}
+.login-btn{width:100%;padding:1rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:'Outfit',sans-serif;font-weight:700;font-size:.88rem;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:8px;cursor:pointer;margin-top:.5rem;transition:opacity .2s,transform .15s}
+.login-btn:hover{opacity:.9;transform:scale(1.01)}
+.login-err{color:#ff3cac;font-size:.82rem;margin-top:.8rem;text-align:center;min-height:1.2rem}
+.back-link{display:block;text-align:center;margin-top:1.5rem;font-size:.78rem;color:var(--text);opacity:.3;text-decoration:none;transition:opacity .2s}
+.back-link:hover{opacity:.7}
+
+/* ── DASHBOARD ── */
+#dashboard-page{display:none;min-height:100vh}
+
+/* sidebar */
+.sidebar{position:fixed;top:0;left:0;width:240px;height:100vh;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform .3s}
+.sb-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.05em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;padding:1.8rem 1.5rem 1rem}
+.sb-label{font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;opacity:.3;padding:.5rem 1.5rem .4rem;margin-top:.5rem}
+.sb-link{display:flex;align-items:center;gap:.75rem;padding:.75rem 1.5rem;font-size:.88rem;color:var(--text);text-decoration:none;opacity:.45;transition:opacity .2s,background .2s;cursor:pointer;border:none;background:none;width:100%;text-align:left}
+.sb-link:hover{opacity:.9;background:rgba(255,255,255,.04)}
+.sb-link.active{opacity:1;background:rgba(0,255,225,.06);border-right:2px solid var(--accent);color:var(--accent)}
+.sb-link .icon{font-size:1.1rem;width:20px}
+.sb-bottom{margin-top:auto;padding:1.5rem}
+.sb-admin{font-size:.78rem;opacity:.35;margin-bottom:.8rem;line-height:1.5}
+.sb-logout{width:100%;padding:.65rem;background:rgba(255,60,172,.1);border:1px solid rgba(255,60,172,.2);color:#ff3cac;font-family:'Outfit',sans-serif;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;border-radius:6px;cursor:pointer;transition:background .2s}
+.sb-logout:hover{background:rgba(255,60,172,.2)}
+
+/* main content */
+.main{margin-left:240px;padding:2.5rem;min-height:100vh}
+.page-section{display:none}.page-section.active{display:block}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:2.5rem;letter-spacing:.03em;margin-bottom:.3rem}
+.page-sub{font-size:.88rem;opacity:.4;margin-bottom:2.5rem}
+
+/* stats row */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:border-color .3s}
+.stat-card:hover{border-color:rgba(0,255,225,.2)}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--accent);line-height:1;letter-spacing:-.02em}
+.stat-l{font-size:.75rem;opacity:.4;letter-spacing:.06em;text-transform:uppercase;margin-top:.2rem}
+
+/* leads table */
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.table-head{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 1.5rem;border-bottom:1px solid var(--border)}
+.table-head h3{font-size:1rem;font-weight:600}
+.filter-row{display:flex;gap:.5rem}
+.filter-btn{padding:.4rem .9rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Outfit',sans-serif;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;transition:background .2s,border-color .2s}
+.filter-btn.active,.filter-btn:hover{background:rgba(0,255,225,.08);border-color:rgba(0,255,225,.3);color:var(--accent)}
+table{width:100%;border-collapse:collapse}
+th{font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;opacity:.3;padding:.9rem 1.2rem;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:.9rem 1.2rem;font-size:.85rem;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:.2rem .65rem;border-radius:20px;font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+.badge.new{background:rgba(0,255,225,.12);color:var(--accent);border:1px solid rgba(0,255,225,.25)}
+.badge.read{background:rgba(255,255,255,.06);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1)}
+.badge.replied{background:rgba(255,60,172,.1);color:#ff3cac;border:1px solid rgba(255,60,172,.2)}
+.action-btn{padding:.3rem .7rem;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:.7rem;cursor:pointer;transition:background .2s;margin-right:.3rem}
+.action-btn:hover{background:rgba(0,255,225,.1);border-color:rgba(0,255,225,.3)}
+.action-btn.del:hover{background:rgba(255,60,172,.1);border-color:rgba(255,60,172,.3);color:#ff3cac}
+.empty-state{text-align:center;padding:4rem;opacity:.3;font-size:.9rem}
+
+/* lead detail modal */
+#lead-modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1rem}
+.lead-modal-box{background:var(--card);border:1px solid rgba(0,255,225,.15);border-radius:16px;padding:2rem;width:100%;max-width:540px;max-height:85vh;overflow-y:auto;position:relative}
+.lm-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.06);border:none;color:var(--text);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:.9rem}
+.lm-row{display:flex;gap:.5rem;margin-bottom:.75rem;align-items:flex-start}
+.lm-key{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;opacity:.35;min-width:90px;padding-top:.15rem}
+.lm-val{font-size:.9rem;line-height:1.6;word-break:break-word}
+
+/* CMS editor tab */
+.cms-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.cms-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;cursor:pointer;transition:border-color .3s,background .3s}
+.cms-card:hover{border-color:rgba(0,255,225,.3);background:rgba(0,255,225,.03)}
+.cms-card h4{font-weight:600;font-size:.95rem;margin-bottom:.3rem}
+.cms-card p{font-size:.8rem;opacity:.4;line-height:1.5}
+.cms-card .cms-icon{font-size:1.8rem;margin-bottom:.8rem}
+
+/* settings */
+.settings-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.8rem;margin-bottom:1rem}
+.settings-card h3{font-size:1rem;font-weight:600;margin-bottom:1.2rem}
+.sfield{margin-bottom:1rem}
+.sfield label{display:block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;opacity:.35;margin-bottom:.35rem}
+.sfield input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:.65rem .9rem;color:var(--text);font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s}
+.sfield input:focus{border-color:rgba(0,255,225,.4)}
+.save-btn{padding:.7rem 1.8rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:'Outfit',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;transition:opacity .2s}
+.save-btn:hover{opacity:.88}
+
+/* toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);padding:.75rem 1.5rem;border-radius:8px;font-weight:700;font-size:.82rem;letter-spacing:.04em;z-index:9999;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap}
+.toast.show{opacity:1}
+.toast.success{background:var(--accent);color:#000}
+.toast.error{background:#ff3cac;color:#fff}
+
+/* hamburger for mobile */
+.mob-menu-btn{display:none;position:fixed;top:1rem;left:1rem;z-index:200;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.5rem .7rem;cursor:pointer;color:var(--text);font-size:1.2rem}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+  .main{margin-left:0;padding:1.2rem;padding-top:4rem}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .cms-grid{grid-template-columns:1fr}
+  .mob-menu-btn{display:block}
+  table th:nth-child(3),table td:nth-child(3),table th:nth-child(4),table td:nth-child(4){display:none}
+}
+@media(max-width:480px){.stats-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN PAGE
+══════════════════════════════════════ -->
+<div id="login-page">
+  <div class="login-box">
+    <div class="login-logo">RevenueArce</div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="lfield">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="tanvichauhan622@gmail.com" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="lfield">
+      <label>Password</label>
+      <input type="password" id="login-pass" placeholder="••••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="login-btn" onclick="doLogin()" id="login-btn">Login to Admin</button>
+    <div class="login-err" id="login-err"></div>
+    <a href="index.html" class="back-link">← Back to website</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════ -->
+<div id="dashboard-page">
+
+  <button class="mob-menu-btn" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-logo">RevenueArce</div>
+    <div class="sb-label">Main</div>
+    <button class="sb-link active" onclick="showSection('overview')"><span class="icon">📊</span> Overview</button>
+    <button class="sb-link" onclick="showSection('leads')"><span class="icon">📬</span> Leads <span id="new-badge" style="margin-left:auto;background:var(--accent);color:#000;font-size:.6rem;font-weight:700;padding:.15rem .45rem;border-radius:10px;display:none">0</span></button>
+    <div class="sb-label">Site</div>
+    <button class="sb-link" onclick="window.open('index.html','_blank')"><span class="icon">🌐</span> View Website</button>
+    <button class="sb-link" onclick="showSection('settings')"><span class="icon">⚙️</span> Settings</button>
+    <div class="sb-bottom">
+      <div class="sb-admin" id="sb-admin-info">Logged in as<br/>—</div>
+      <button class="sb-logout" onclick="doLogout()">Log Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- OVERVIEW -->
+    <div class="page-section active" id="section-overview">
+      <div class="page-title">Overview</div>
+      <div class="page-sub">Welcome back! Here's what's happening with Revenue Arce.</div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-n" id="stat-total">—</div><div class="stat-l">Total Leads</div></div>
+        <div class="stat-card"><div class="stat-n" id="stat-new" style="color:var(--accent)">—</div><div class="stat-l">New Leads</div></div>
+        <div class="stat-card"><div class="stat-n" id="stat-read" style="color:#ffcc00">—</div><div class="stat-l">Read</div></div>
+        <div class="stat-card"><div class="stat-n" id="stat-replied" style="color:var(--accent2)">—</div><div class="stat-l">Replied</div></div>
+      </div>
+
+      <!-- Recent leads preview -->
+      <div class="table-wrap">
+        <div class="table-head">
+          <h3>Recent Leads</h3>
+          <button class="filter-btn" onclick="showSection('leads')">View All →</button>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Service</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="recent-leads-body"><tr><td colspan="5" class="empty-state">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LEADS -->
+    <div class="page-section" id="section-leads">
+      <div class="page-title">All Leads</div>
+      <div class="page-sub">Every contact form submission from your website.</div>
+      <div class="table-wrap">
+        <div class="table-head">
+          <h3>Submissions</h3>
+          <div class="filter-row">
+            <button class="filter-btn active" onclick="filterLeads('all',this)">All</button>
+            <button class="filter-btn" onclick="filterLeads('new',this)">New</button>
+            <button class="filter-btn" onclick="filterLeads('read',this)">Read</button>
+            <button class="filter-btn" onclick="filterLeads('replied',this)">Replied</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Service</th><th>Phone</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="leads-body"><tr><td colspan="7" class="empty-state">Loading leads...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="page-section" id="section-settings">
+      <div class="page-title">Settings</div>
+      <div class="page-sub">Manage your admin account.</div>
+
+      <div class="settings-card">
+        <h3>Change Password</h3>
+        <div class="sfield"><label>Current Password</label><input type="password" id="s-curpass" placeholder="Current password"/></div>
+        <div class="sfield"><label>New Password</label><input type="password" id="s-newpass" placeholder="New password (min 6 chars)"/></div>
+        <div class="sfield"><label>Confirm New Password</label><input type="password" id="s-confpass" placeholder="Confirm new password"/></div>
+        <button class="save-btn" onclick="changePassword()">Update Password</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>Site Editor</h3>
+        <p style="font-size:.85rem;opacity:.5;line-height:1.65;margin-bottom:1.2rem">To edit your website content, visit the website while logged in — the Edit Site button will appear automatically.</p>
+        <button class="save-btn" onclick="goToSiteEditor()">Open Site Editor →</button>
+      </div>
+
+      <div class="settings-card">
+        <h3>API Info</h3>
+        <div style="font-family:'Courier New',monospace;font-size:.78rem;opacity:.4;line-height:2;background:rgba(255,255,255,.03);padding:.8rem;border-radius:6px">
+          Backend: revenue-arce-backend-production.up.railway.app<br/>
+          Database: MongoDB Atlas<br/>
+          Email: Resend
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- LEAD DETAIL MODAL -->
+<div id="lead-modal">
+  <div class="lead-modal-box">
+    <button class="lm-close" onclick="closeLeadModal()">✕</button>
+    <div id="lead-modal-content"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const API='https://revenue-arce-backend-production.up.railway.app';
+let TOKEN=localStorage.getItem('ra_token')||null;
+let allLeads=[];
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+window.onload=function(){
+  if(TOKEN){showDashboard();}
+  else{showLogin();}
+};
+
+function showLogin(){
+  document.getElementById('login-page').style.display='flex';
+  document.getElementById('dashboard-page').style.display='none';
+}
+function showDashboard(){
+  document.getElementById('login-page').style.display='none';
+  document.getElementById('dashboard-page').style.display='block';
+  // verify token still valid
+  fetch(`${API}/api/auth/me`,{headers:{Authorization:'Bearer '+TOKEN}})
+    .then(r=>r.json())
+    .then(data=>{
+      if(!data.success){doLogout();return;}
+      document.getElementById('sb-admin-info').innerHTML=`Logged in as<br/><strong>${data.admin.email}</strong>`;
+      loadDashboard();
+    })
+    .catch(()=>{loadDashboard();});
+}
+
+/* ══════════════════════════════════════
+   LOGIN
+══════════════════════════════════════ */
+async function doLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  const btn=document.getElementById('login-btn');
+  const err=document.getElementById('login-err');
+  err.textContent='';
+  if(!email||!pass){err.textContent='Please enter email and password.';return;}
+  btn.textContent='Logging in...';btn.disabled=true;
+  try{
+    const r=await fetch(`${API}/api/auth/login`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass})
+    });
+    const data=await r.json();
+    if(data.success){
+      TOKEN=data.token;
+      localStorage.setItem('ra_token',TOKEN);
+      // also set on main site so editor appears
+      showDashboard();
+    } else {
+      err.textContent=data.message||'Invalid credentials.';
+    }
+  }catch(e){
+    err.textContent='Could not reach server. Try again.';
+  }finally{
+    btn.textContent='Login to Admin';btn.disabled=false;
+  }
+}
+
+function doLogout(){
+  TOKEN=null;
+  localStorage.removeItem('ra_token');
+  showLogin();
+  toast('Logged out successfully');
+}
+
+/* ══════════════════════════════════════
+   DASHBOARD LOAD
+══════════════════════════════════════ */
+async function loadDashboard(){
+  await loadLeads();
+  updateStats();
+  renderRecentLeads();
+}
+
+async function loadLeads(){
+  try{
+    const r=await fetch(`${API}/api/contact?limit=100`,{headers:{Authorization:'Bearer '+TOKEN}});
+    const data=await r.json();
+    if(data.success){allLeads=data.contacts||[];}
+  }catch(e){allLeads=[];}
+}
+
+function updateStats(){
+  const total=allLeads.length;
+  const newL=allLeads.filter(l=>l.status==='new').length;
+  const read=allLeads.filter(l=>l.status==='read').length;
+  const replied=allLeads.filter(l=>l.status==='replied').length;
+  document.getElementById('stat-total').textContent=total;
+  document.getElementById('stat-new').textContent=newL;
+  document.getElementById('stat-read').textContent=read;
+  document.getElementById('stat-replied').textContent=replied;
+  const badge=document.getElementById('new-badge');
+  if(newL>0){badge.textContent=newL;badge.style.display='inline';}
+  else badge.style.display='none';
+}
+
+function renderRecentLeads(){
+  const tbody=document.getElementById('recent-leads-body');
+  const recent=allLeads.slice(0,5);
+  if(recent.length===0){tbody.innerHTML='<tr><td colspan="5" class="empty-state">No leads yet. Share your site!</td></tr>';return;}
+  tbody.innerHTML=recent.map(l=>`
+    <tr style="cursor:pointer" onclick="openLead('${l._id}')">
+      <td><strong>${esc(l.name)}</strong></td>
+      <td style="opacity:.6">${esc(l.email)}</td>
+      <td style="opacity:.6">${esc(l.service||'—')}</td>
+      <td><span class="badge ${l.status}">${l.status}</span></td>
+      <td style="opacity:.5;font-size:.78rem">${fmtDate(l.createdAt)}</td>
+    </tr>`).join('');
+}
+
+function renderLeadsTable(leads){
+  const tbody=document.getElementById('leads-body');
+  if(leads.length===0){tbody.innerHTML='<tr><td colspan="7" class="empty-state">No leads found.</td></tr>';return;}
+  tbody.innerHTML=leads.map(l=>`
+    <tr>
+      <td><strong style="cursor:pointer;color:var(--accent)" onclick="openLead('${l._id}')">${esc(l.name)}</strong></td>
+      <td style="opacity:.65;font-size:.82rem">${esc(l.email)}</td>
+      <td style="opacity:.6;font-size:.82rem">${esc(l.service||'—')}</td>
+      <td style="opacity:.6;font-size:.82rem">${esc(l.phone||'—')}</td>
+      <td><span class="badge ${l.status}">${l.status}</span></td>
+      <td style="opacity:.45;font-size:.75rem">${fmtDate(l.createdAt)}</td>
+      <td>
+        <button class="action-btn" onclick="markStatus('${l._id}','replied')">✓ Replied</button>
+        <button class="action-btn del" onclick="deleteLead('${l._id}')">🗑</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterLeads(status,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const filtered=status==='all'?allLeads:allLeads.filter(l=>l.status===status);
+  renderLeadsTable(filtered);
+}
+
+/* ══════════════════════════════════════
+   LEAD ACTIONS
+══════════════════════════════════════ */
+function openLead(id){
+  const l=allLeads.find(x=>x._id===id);
+  if(!l)return;
+  if(l.status==='new')markStatus(id,'read',true);
+  document.getElementById('lead-modal-content').innerHTML=`
+    <h3 style="font-size:1.2rem;font-weight:700;margin-bottom:1.5rem;color:var(--accent)">${esc(l.name)}</h3>
+    <div class="lm-row"><span class="lm-key">Email</span><span class="lm-val"><a href="mailto:${esc(l.email)}" style="color:var(--accent)">${esc(l.email)}</a></span></div>
+    <div class="lm-row"><span class="lm-key">Phone</span><span class="lm-val">${esc(l.phone||'—')}</span></div>
+    <div class="lm-row"><span class="lm-key">Service</span><span class="lm-val">${esc(l.service||'—')}</span></div>
+    <div class="lm-row"><span class="lm-key">Status</span><span class="lm-val"><span class="badge ${l.status}">${l.status}</span></span></div>
+    <div class="lm-row"><span class="lm-key">Date</span><span class="lm-val">${fmtDate(l.createdAt)}</span></div>
+    <div style="margin-top:1.2rem;padding:1rem;background:rgba(255,255,255,.03);border-radius:8px;border-left:3px solid var(--accent)">
+      <div style="font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;opacity:.35;margin-bottom:.5rem">Message</div>
+      <p style="font-size:.9rem;line-height:1.7;opacity:.8">${esc(l.message)}</p>
+    </div>
+    <div style="display:flex;gap:.6rem;margin-top:1.5rem;flex-wrap:wrap">
+      <a href="mailto:${esc(l.email)}" style="flex:1;padding:.75rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-weight:700;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;border-radius:6px;text-decoration:none;text-align:center">Reply via Email</a>
+      <button onclick="markStatus('${l._id}','replied');closeLeadModal()" style="flex:1;padding:.75rem;background:rgba(0,255,225,.08);border:1px solid rgba(0,255,225,.2);color:var(--accent);font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;border-radius:6px;cursor:pointer">Mark Replied</button>
+      <button onclick="deleteLead('${l._id}');closeLeadModal()" style="padding:.75rem 1rem;background:rgba(255,60,172,.08);border:1px solid rgba(255,60,172,.2);color:#ff3cac;font-size:.78rem;border-radius:6px;cursor:pointer">🗑 Delete</button>
+    </div>
+  `;
+  document.getElementById('lead-modal').style.display='flex';
+}
+function closeLeadModal(){document.getElementById('lead-modal').style.display='none';}
+
+async function markStatus(id,status,silent=false){
+  try{
+    await fetch(`${API}/api/contact/${id}/status`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+      body:JSON.stringify({status})
+    });
+    const lead=allLeads.find(l=>l._id===id);
+    if(lead)lead.status=status;
+    updateStats();
+    renderLeadsTable(allLeads);
+    renderRecentLeads();
+    if(!silent)toast('Status updated to '+status);
+  }catch(e){toast('Failed to update','error');}
+}
+
+async function deleteLead(id){
+  if(!confirm('Delete this lead? This cannot be undone.'))return;
+  try{
+    await fetch(`${API}/api/contact/${id}`,{method:'DELETE',headers:{Authorization:'Bearer '+TOKEN}});
+    allLeads=allLeads.filter(l=>l._id!==id);
+    updateStats();
+    renderLeadsTable(allLeads);
+    renderRecentLeads();
+    toast('Lead deleted');
+  }catch(e){toast('Failed to delete','error');}
+}
+
+/* ══════════════════════════════════════
+   SETTINGS
+══════════════════════════════════════ */
+async function changePassword(){
+  const cur=document.getElementById('s-curpass').value;
+  const nw=document.getElementById('s-newpass').value;
+  const conf=document.getElementById('s-confpass').value;
+  if(!cur||!nw){toast('Fill in all fields','error');return;}
+  if(nw!==conf){toast('Passwords do not match','error');return;}
+  if(nw.length<6){toast('Password must be at least 6 characters','error');return;}
+  try{
+    const r=await fetch(`${API}/api/auth/change-password`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+TOKEN},
+      body:JSON.stringify({currentPassword:cur,newPassword:nw})
+    });
+    const data=await r.json();
+    if(data.success){toast('Password updated!');document.getElementById('s-curpass').value='';document.getElementById('s-newpass').value='';document.getElementById('s-confpass').value='';}
+    else toast(data.message||'Failed','error');
+  }catch(e){toast('Server error','error');}
+}
+
+function goToSiteEditor(){
+  // store token so main site can read it
+  localStorage.setItem('ra_token',TOKEN);
+  window.open('index.html','_blank');
+}
+
+/* ══════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════ */
+function showSection(name){
+  document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('section-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(name==='leads')renderLeadsTable(allLeads);
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+/* ══════════════════════════════════════
+   HELPERS
+══════════════════════════════════════ */
+function esc(str){if(!str)return '';return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmtDate(d){if(!d)return '—';const dt=new Date(d);return dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
+function toast(msg,type='success'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast '+type+' show';
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+</script>
+</body>
+</html>

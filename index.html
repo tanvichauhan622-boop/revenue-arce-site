@@ -363,8 +363,35 @@ footer p{font-size:.76rem;opacity:.22}
   </ul>
 </footer>
 
-<!-- EDITOR TOGGLE -->
-<button id="editor-toggle" onclick="toggleEditor()">✏️ Edit Site</button>
+
+
+
+<!-- ADMIN LOGIN LINK -->
+<a href="admin.html" style="position:fixed;bottom:1.5rem;left:1.5rem;z-index:500;font-family:var(--font-body);font-size:.65rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text);opacity:.12;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity=.5" onmouseout="this.style.opacity=.12">Admin</a>
+
+<!-- EDITOR TOGGLE (hidden until logged in) -->
+<button id="editor-toggle" onclick="toggleEditor()" style="display:none">✏️ Edit Site</button>
+
+<!-- CONTACT MODAL -->
+<div id="contact-modal" style="display:none;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.88);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1rem">
+  <div style="background:#0f0f0f;border:1px solid rgba(0,255,225,.15);border-radius:20px;padding:2.5rem;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;position:relative">
+    <button onclick="closeContactModal()" style="position:absolute;top:1.2rem;right:1.2rem;background:rgba(255,255,255,.06);border:none;color:var(--text);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:1rem">X</button>
+    <h2 style="font-family:var(--font-hero);font-size:2.2rem;letter-spacing:.04em;margin-bottom:.4rem;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">LETS TALK</h2>
+    <p style="font-size:.85rem;opacity:.45;margin-bottom:2rem;line-height:1.65">Fill in your details and we will get back to you within 24 hours.</p>
+    <form id="contact-form" onsubmit="event.preventDefault();submitContactForm()">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem">
+        <div><label style="display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;opacity:.4;margin-bottom:.35rem">Full Name *</label><input id="cf-name" type="text" placeholder="Your name" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:.68rem .9rem;color:var(--text);font-family:var(--font-body);font-size:.85rem;outline:none"/></div>
+        <div><label style="display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;opacity:.4;margin-bottom:.35rem">Email *</label><input id="cf-email" type="email" placeholder="you@email.com" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:.68rem .9rem;color:var(--text);font-family:var(--font-body);font-size:.85rem;outline:none"/></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.8rem">
+        <div><label style="display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;opacity:.4;margin-bottom:.35rem">Phone</label><input id="cf-phone" type="tel" placeholder="+91 98765 43210" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:.68rem .9rem;color:var(--text);font-family:var(--font-body);font-size:.85rem;outline:none"/></div>
+        <div><label style="display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;opacity:.4;margin-bottom:.35rem">Interested In</label><select id="cf-service" style="width:100%;background:#111;border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:.68rem .9rem;color:var(--text);font-family:var(--font-body);font-size:.85rem;outline:none;cursor:pointer"><option value="Other">Select service</option><option value="Website Design">Website Design</option><option value="Social Media">Social Media</option><option value="AI Automation">AI Automation</option><option value="SEO and Growth">SEO and Growth</option><option value="Brand Identity">Brand Identity</option><option value="Content Creation">Content Creation</option></select></div>
+      </div>
+      <div style="margin-bottom:1.4rem"><label style="display:block;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;opacity:.4;margin-bottom:.35rem">Message *</label><textarea id="cf-message" placeholder="Tell us about your project..." rows="4" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:6px;padding:.68rem .9rem;color:var(--text);font-family:var(--font-body);font-size:.85rem;outline:none;resize:vertical"></textarea></div>
+      <button id="cf-submit" type="submit" style="width:100%;padding:1rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-family:var(--font-body);font-weight:700;font-size:.88rem;letter-spacing:.06em;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer">Send Message</button>
+    </form>
+  </div>
+</div>
 
 <!-- EDITOR PANEL -->
 <div id="editor-panel">
@@ -736,8 +763,232 @@ function preset(name){
 /* CUSTOM CSS (live as you type) */
 function injectCSS(){document.getElementById('injected-css').textContent=document.getElementById('f-css').value;}
 
-/* EMAIL */
-function handleEmail(){const v=document.getElementById('emailIn').value;if(v&&v.includes('@')){alert('🚀 Got it! We\'ll reach out to '+v+' within 24 hours.');document.getElementById('emailIn').value='';}else{const e=document.getElementById('emailIn');e.style.outline='2px solid var(--accent2)';setTimeout(()=>e.style.outline='',1000);}}
+/* ══════════════════════════════════════
+   BACKEND CONFIG
+══════════════════════════════════════ */
+const API='https://revenue-arce-backend-production.up.railway.app';
+let ADMIN_TOKEN=localStorage.getItem('ra_token')||null;
+
+/* ══════════════════════════════════════
+   AUTH — show/hide editor based on login
+══════════════════════════════════════ */
+function checkAuth(){
+  const btn=document.getElementById('editor-toggle');
+  if(ADMIN_TOKEN){
+    btn.style.display='block';
+    btn.innerHTML='✏️ Edit Site';
+  } else {
+    btn.style.display='none';
+  }
+}
+
+function adminLogout(){
+  localStorage.removeItem('ra_token');
+  ADMIN_TOKEN=null;
+  checkAuth();
+  document.getElementById('editor-panel').classList.remove('open');
+  showToast('Logged out successfully');
+}
+
+/* ══════════════════════════════════════
+   LOAD CMS CONTENT (for all visitors)
+══════════════════════════════════════ */
+async function loadCMS(){
+  try{
+    const r=await fetch(`${API}/api/cms`);
+    const {content}=await r.json();
+    if(!content)return;
+    const h=content.hero;
+    if(h){
+      if(h.eyebrow)st('ed-eyebrow',h.eyebrow);
+      if(h.line1)st('ed-l1',h.line1);
+      if(h.line2)st('ed-l2',h.line2);
+      if(h.line3)st('ed-l3',h.line3);
+      if(h.description)st('ed-hdesc',h.description);
+      if(h.button1)st('ed-btn1',h.button1);
+      if(h.button2)st('ed-btn2',h.button2);
+      if(h.badge1){st('ed-b1n',h.badge1.num);st('ed-b1l',h.badge1.label);}
+      if(h.badge2){st('ed-b2n',h.badge2.num);st('ed-b2l',h.badge2.label);}
+      if(h.badge3){st('ed-b3n',h.badge3.num);st('ed-b3l',h.badge3.label);}
+    }
+    const s=content.services;
+    if(s){
+      if(s.title)st('ed-svctitle',s.title);
+      if(s.subtitle)st('ed-svcsub',s.subtitle);
+      if(s.items){s.items.forEach((item,i)=>{const n=i+1;st('s'+n+'i',item.icon||'');st('s'+n+'t',item.title||'');st('s'+n+'d',item.description||'');});}
+    }
+    const w=content.why;
+    if(w){
+      if(w.bigStat)st('ed-whybig',w.bigStat);
+      if(w.description)st('ed-whyp',w.description);
+      if(w.metrics){w.metrics.forEach((m,i)=>{st('ed-m'+(i+1)+'n',m.num||'');st('ed-m'+(i+1)+'l',m.label||'');});}
+      if(w.points){w.points.forEach((p,i)=>{st('wp'+(i+1)+'i',p.icon||'');st('wp'+(i+1)+'t',p.title||'');st('wp'+(i+1)+'d',p.description||'');});}
+    }
+    const pr=content.process;
+    if(pr){
+      if(pr.title)st('ed-proctitle',pr.title);
+      if(pr.subtitle)st('ed-procsub',pr.subtitle);
+      if(pr.steps){pr.steps.forEach((s,i)=>{st('p'+(i+1)+'t',s.title||'');st('p'+(i+1)+'d',s.description||'');});}
+    }
+    const c=content.cta;
+    if(c){
+      if(c.highlightWord)st('ed-ctaem',c.highlightWord);
+      if(c.subtitle)st('ed-ctap',c.subtitle);
+      if(c.footerCopy)st('ed-fcopy',c.footerCopy);
+    }
+    const id=content.identity;
+    if(id){
+      if(id.logo)st('ed-logo',id.logo);
+      if(id.pageTitle)document.getElementById('page-title').textContent=id.pageTitle;
+      if(id.navCta)st('ed-navcta',id.navCta);
+      if(id.navLinks){id.navLinks.forEach((l,i)=>{st('nav-l'+(i+1),l);});}
+    }
+  }catch(e){console.log('CMS offline, using defaults');}
+}
+
+/* ══════════════════════════════════════
+   SAVE TO BACKEND (admin only)
+══════════════════════════════════════ */
+async function saveToBackend(section,data){
+  if(!ADMIN_TOKEN){showToast('Not logged in!','error');return;}
+  try{
+    const r=await fetch(`${API}/api/cms/${section}`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+ADMIN_TOKEN},
+      body:JSON.stringify({data})
+    });
+    const res=await r.json();
+    if(res.success){showToast('✅ Saved & live for everyone!');}
+    else{showToast('Save failed: '+res.message,'error');}
+  }catch(e){showToast('Could not reach server','error');}
+}
+
+/* override apply functions to also save to backend */
+const _applyHero=applyHero;
+applyHero=function(){
+  _applyHero();
+  saveToBackend('hero',{
+    eyebrow:gv('f-eyebrow'),line1:gv('f-l1'),line2:gv('f-l2'),line3:gv('f-l3'),
+    description:gv('f-hdesc'),button1:gv('f-btn1'),button2:gv('f-btn2'),
+    badge1:{num:gv('f-b1n'),label:gv('f-b1l')},
+    badge2:{num:gv('f-b2n'),label:gv('f-b2l')},
+    badge3:{num:gv('f-b3n'),label:gv('f-b3l')},
+  });
+};
+const _applyServices=applyServices;
+applyServices=function(){
+  _applyServices();
+  const items=[1,2,3,4,5,6].map(n=>({icon:gv('f-s'+n+'i'),title:gv('f-s'+n+'t'),description:gv('f-s'+n+'d')}));
+  saveToBackend('services',{title:gv('f-svct'),subtitle:gv('f-svcs'),items});
+};
+const _applyWhy=applyWhy;
+applyWhy=function(){
+  _applyWhy();
+  saveToBackend('why',{
+    bigStat:gv('f-whybig'),description:gv('f-whyp'),
+    metrics:[1,2,3,4].map(n=>({num:gv('f-m'+n+'n'),label:gv('f-m'+n+'l')})),
+    points:[1,2,3,4].map(n=>({icon:gv('f-wp'+n+'i'),title:gv('f-wp'+n+'t'),description:gv('f-wp'+n+'d')})),
+  });
+};
+const _applyProcess=applyProcess;
+applyProcess=function(){
+  _applyProcess();
+  saveToBackend('process',{
+    title:gv('f-proctitle'),subtitle:gv('f-procsub'),
+    steps:[1,2,3,4].map(n=>({title:gv('f-p'+n+'t'),description:gv('f-p'+n+'d')})),
+  });
+};
+const _applyCTA=applyCTA;
+applyCTA=function(){
+  _applyCTA();
+  saveToBackend('cta',{highlightWord:gv('f-ctaem'),subtitle:gv('f-ctap'),footerCopy:gv('f-fcopy')});
+};
+const _applyIdentity=applyIdentity;
+applyIdentity=function(){
+  _applyIdentity();
+  saveToBackend('identity',{
+    logo:gv('f-logo'),pageTitle:gv('f-ptitle'),navCta:gv('f-navcta'),
+    navLinks:[gv('f-nl1'),gv('f-nl2'),gv('f-nl3'),gv('f-nl4')],
+  });
+};
+
+/* ══════════════════════════════════════
+   TOAST NOTIFICATION
+══════════════════════════════════════ */
+function showToast(msg,type='success'){
+  const t=document.createElement('div');
+  t.style.cssText=`position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:${type==='error'?'#ff3cac':'#00ffe1'};color:#000;font-family:var(--font-body);font-weight:700;font-size:.82rem;padding:.75rem 1.5rem;border-radius:8px;z-index:9999;letter-spacing:.04em;box-shadow:0 8px 30px rgba(0,0,0,.4);transition:opacity .3s`;
+  t.textContent=msg;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';setTimeout(()=>t.remove(),300);},2500);
+}
+
+/* ══════════════════════════════════════
+   CONTACT FORM MODAL
+══════════════════════════════════════ */
+function openContactModal(){
+  document.getElementById('contact-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeContactModal(){
+  document.getElementById('contact-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+async function submitContactForm(){
+  const name=document.getElementById('cf-name').value.trim();
+  const email=document.getElementById('cf-email').value.trim();
+  const phone=document.getElementById('cf-phone').value.trim();
+  const service=document.getElementById('cf-service').value;
+  const message=document.getElementById('cf-message').value.trim();
+  const btn=document.getElementById('cf-submit');
+
+  if(!name){showToast('Please enter your name','error');return;}
+  if(!email||!email.includes('@')){showToast('Please enter a valid email','error');return;}
+  if(!message){showToast('Please enter a message','error');return;}
+
+  btn.textContent='Sending...';btn.disabled=true;
+
+  try{
+    const r=await fetch(`${API}/api/contact`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,email,phone,service,message})
+    });
+    const data=await r.json();
+    if(data.success){
+      closeContactModal();
+      showToast('🚀 Message sent! We\'ll reply within 24hrs.');
+      document.getElementById('contact-form').reset();
+    } else {
+      showToast(data.message||'Something went wrong','error');
+    }
+  }catch(e){
+    showToast('Could not send. Please try again.','error');
+  }finally{
+    btn.textContent='Send Message';btn.disabled=false;
+  }
+}
+
+/* simple CTA email (bottom of page) */
+function handleEmail(){
+  const email=document.getElementById('emailIn').value.trim();
+  if(!email||!email.includes('@')){
+    document.getElementById('emailIn').style.outline='2px solid var(--accent2)';
+    setTimeout(()=>document.getElementById('emailIn').style.outline='',1000);
+    return;
+  }
+  // pre-fill modal and open it
+  document.getElementById('cf-email').value=email;
+  document.getElementById('emailIn').value='';
+  openContactModal();
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+loadCMS();
+checkAuth();
 
 /* EXPORT */
 function exportSite(){
@@ -751,61 +1002,6 @@ function exportSite(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='revenue-arce.html';a.click();URL.revokeObjectURL(a.href);
 }
 async function copyHTML(){try{await navigator.clipboard.writeText(document.documentElement.outerHTML);alert('✅ Copied to clipboard!');}catch(e){alert('Could not copy — use Download instead.');}}
-// ── BACKEND CONNECTION ──
-const API = 'https://revenue-arce-backend-production.up.railway.app';
-
-// Load CMS content on page load
-fetch(`${API}/api/cms`)
-  .then(r => r.json())
-  .then(({ content }) => {
-    if (!content) return;
-    const h = content.hero;
-    if (h) {
-      if(h.eyebrow) document.getElementById('ed-eyebrow').textContent = h.eyebrow;
-      if(h.line1) document.getElementById('ed-l1').textContent = h.line1;
-      if(h.line2) document.getElementById('ed-l2').textContent = h.line2;
-      if(h.line3) document.getElementById('ed-l3').textContent = h.line3;
-      if(h.description) document.getElementById('ed-hdesc').textContent = h.description;
-      if(h.badge1) { document.getElementById('ed-b1n').textContent = h.badge1.num; document.getElementById('ed-b1l').textContent = h.badge1.label; }
-      if(h.badge2) { document.getElementById('ed-b2n').textContent = h.badge2.num; document.getElementById('ed-b2l').textContent = h.badge2.label; }
-      if(h.badge3) { document.getElementById('ed-b3n').textContent = h.badge3.num; document.getElementById('ed-b3l').textContent = h.badge3.label; }
-    }
-  })
-  .catch(() => console.log('CMS offline, using defaults'));
-
-// Override handleEmail to use backend
-function handleEmail() {
-  const email = document.getElementById('emailIn').value;
-  if (!email || !email.includes('@')) {
-    document.getElementById('emailIn').style.outline = '2px solid var(--accent2)';
-    setTimeout(() => document.getElementById('emailIn').style.outline = '', 1000);
-    return;
-  }
-  const btn = document.querySelector('.email-row button');
-  btn.textContent = 'Sending...';
-  btn.disabled = true;
-  fetch(`${API}/api/contact`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      name: 'Website Visitor',
-      email,
-      message: 'Interested in services — came from the website CTA.',
-      service: 'Other'
-    })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.success) {
-      alert('🚀 Got it! We\'ll reach out within 24 hours.');
-      document.getElementById('emailIn').value = '';
-    } else {
-      alert('Something went wrong. Please try again.');
-    }
-  })
-  .catch(() => alert('Could not send. Please try again.'))
-  .finally(() => { btn.textContent = "Let's Go →"; btn.disabled = false; });
-}
 </script>
 </body>
 </html>
